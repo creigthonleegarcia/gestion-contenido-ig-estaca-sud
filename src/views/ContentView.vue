@@ -124,7 +124,7 @@
 
         <!-- Media Cover -->
         <div class="post-card-media" v-if="getPostImage(post)">
-          <img :src="getPostImage(post)" :alt="post.title" loading="lazy" />
+          <img :src="getPostImage(post)" :alt="post.title" @error="onImageError(post.id)" loading="lazy" />
           <span class="media-format-badge">
             <component :is="getFormatIcon(post.format)" />
             {{ formatLabels[post.format] }}
@@ -334,7 +334,14 @@ function getFormatIcon(format) {
   return IconStatic
 }
 
+const failedImages = ref(new Set())
+
+function onImageError(postId) {
+  failedImages.value.add(postId)
+}
+
 function getPostImage(post) {
+  if (failedImages.value.has(post.id)) return null
   if (post.media_url) return post.media_url
   if (post.media_paths) {
     const first = post.media_paths.split(',')[0]

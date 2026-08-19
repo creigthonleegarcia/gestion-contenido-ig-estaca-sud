@@ -94,6 +94,8 @@ router.get('/', async (req, res) => {
 
           const firstLine = item.caption ? item.caption.split('\n')[0].replace(/[#@].*$/, '').trim() : '';
 
+          const imgUrl = (item.media_type === 'VIDEO' && item.thumbnail_url) ? item.thumbnail_url : (item.media_url || item.thumbnail_url);
+
           return {
             id: `ig-${item.id}`,
             ig_id: item.id,
@@ -102,7 +104,7 @@ router.get('/', async (req, res) => {
             hashtags: item.caption?.match(/#[a-zA-Z0-9_]+/g)?.join(' ') || '',
             format: fmt,
             media_paths: null,
-            media_url: item.media_url || item.thumbnail_url,
+            media_url: imgUrl,
             permalink: item.permalink,
             scheduled_at: item.timestamp,
             created_at: item.timestamp,

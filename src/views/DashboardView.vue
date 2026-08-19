@@ -57,24 +57,24 @@
       </div>
 
       <div class="card">
-        <h3 class="card-title">🏆 Top Posts</h3>
+        <h3 class="card-title">🏆 Top Posts en Instagram</h3>
         <div v-if="overview?.topPosts?.length" class="top-posts-list">
-          <div v-for="post in overview.topPosts" :key="post.title" class="top-post-item">
-            <div class="top-post-pillar" :style="{ background: post.pillar_color }"></div>
+          <a v-for="post in overview.topPosts" :key="post.id" :href="post.permalink" target="_blank" class="top-post-item">
+            <img v-if="post.media_url" :src="post.media_url" class="top-post-thumb" :alt="post.caption" />
             <div class="top-post-info">
-              <div class="top-post-title">{{ post.title }}</div>
+              <div class="top-post-title">{{ post.caption }}</div>
               <div class="top-post-meta">
-                <span>👁️ {{ post.reach || 0 }}</span>
-                <span>❤️ {{ post.likes || 0 }}</span>
-                <span>📤 {{ post.shares || 0 }}</span>
-                <span>🔖 {{ post.saves || 0 }}</span>
+                <span>👁️ {{ post.reach }}</span>
+                <span>❤️ {{ post.like_count }}</span>
+                <span>📤 {{ post.shares }}</span>
+                <span>🔖 {{ post.saved }}</span>
               </div>
             </div>
-          </div>
+          </a>
         </div>
         <div v-else class="empty-state">
           <p class="empty-state-icon">📊</p>
-          <p>Publica contenido para ver métricas</p>
+          <p>Conecta Meta API para ver datos reales</p>
         </div>
       </div>
     </div>
@@ -108,12 +108,12 @@ const recommendations = computed(() => insightsStore.recommendations)
 const metrics = computed(() => {
   if (!overview.value) return []
   const latest = overview.value.latestInsight || {}
-  const monthly = overview.value.monthlyReach || {}
+  const profile = overview.value.profile || {}
   return [
-    { icon: '👥', label: 'Seguidores', value: latest.followers || 0, bg: '#007da5' },
-    { icon: '👁️', label: 'Alcance Mensual', value: Math.round(monthly.total_reach || 0), bg: '#318d43' },
-    { icon: '📊', label: 'Impresiones', value: Math.round(monthly.total_impressions || 0), bg: '#d45311' },
-    { icon: '📝', label: 'Posts Totales', value: overview.value.postStats?.total_posts || 0, bg: '#006184' },
+    { icon: '👥', label: 'Seguidores', value: profile.followers_count || latest.followers || 0, bg: '#007da5' },
+    { icon: '👁️', label: 'Alcance (28d)', value: latest.reach || 0, bg: '#318d43' },
+    { icon: '💬', label: 'Cuentas Interacción', value: latest.accounts_engaged || 0, bg: '#d45311' },
+    { icon: '📝', label: 'Posts en IG', value: profile.media_count || overview.value.postStats?.total_posts || 0, bg: '#006184' },
   ]
 })
 
@@ -205,15 +205,7 @@ onMounted(async () => {
     insightsStore.fetchRecommendations()
   ])
 
-  try {
-    const auth = JSON.parse(localStorage.getItem('user'))
-    const token = localStorage.getItem('token')
-    const res = await fetch('http://localhost:3001/api/publish/status', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    const status = await res.json()
-    metaConnected.value = status.configured
-  } catch (e) { /* ignore */ }
+  metaConnected.value = overview.value?.isConnected || false
 
   await nextTick()
   createReachChart()
@@ -359,20 +351,33 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: var(--sp-8);
+  max-height: 380px;
+  overflow-y: auto;
 }
 
 .top-post-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: var(--gray-2);
   border-radius: var(--radius-sm);
   transition: background var(--transition-fast);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 .top-post-item:hover {
   background: var(--gray-3);
+}
+
+.top-post-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .top-post-pillar {
@@ -384,14 +389,18 @@ onMounted(async () => {
 
 .top-post-title {
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 280px;
 }
 
 .top-post-meta {
   display: flex;
-  gap: 12px;
-  font-size: 0.75rem;
+  gap: 10px;
+  font-size: 0.72rem;
   color: var(--text-muted);
 }
 

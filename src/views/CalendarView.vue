@@ -79,17 +79,31 @@
 
           <!-- Published / Scheduled Post Chips -->
           <div class="cal-posts" v-if="cell.posts.length">
-            <router-link
-              v-for="post in cell.posts"
-              :key="post.id"
-              :to="`/content/${post.id}`"
-              class="cal-post-chip"
-              :style="{ borderLeftColor: post.pillar_color }"
-              :title="`${post.title} (${statusLabels[post.status]})`"
-            >
-              <span class="chip-title">{{ post.title || 'Sin título' }}</span>
-              <span class="chip-status-dot" :class="`badge-${post.status}`"></span>
-            </router-link>
+            <template v-for="post in cell.posts" :key="post.id">
+              <a
+                v-if="post.is_live_ig"
+                :href="post.permalink"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="cal-post-chip is-live-chip"
+                :style="{ borderLeftColor: post.pillar_color }"
+                :title="`${post.title} (Ver en Instagram)`"
+              >
+                <span class="chip-title">{{ post.title || 'En Instagram' }}</span>
+                <span class="ig-chip-tag">IG</span>
+              </a>
+
+              <router-link
+                v-else
+                :to="`/content/${post.id}`"
+                class="cal-post-chip"
+                :style="{ borderLeftColor: post.pillar_color }"
+                :title="`${post.title} (${statusLabels[post.status] || 'Borrador'})`"
+              >
+                <span class="chip-title">{{ post.title || 'Sin título' }}</span>
+                <span class="chip-status-dot" :class="`badge-${post.status}`"></span>
+              </router-link>
+            </template>
           </div>
 
           <!-- Strategy Suggestion indicator -->
@@ -466,6 +480,25 @@ onMounted(async () => {
 .cal-post-chip:hover {
   background: #eef6f9;
   transform: translateX(1px);
+}
+
+.is-live-chip {
+  background: #fdf4f8;
+}
+
+.is-live-chip:hover {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+.ig-chip-tag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #db2777;
+  background: #fbcfe8;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1;
 }
 
 .chip-title {

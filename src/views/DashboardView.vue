@@ -82,8 +82,8 @@
           <div class="metric-label-group">
             <span class="metric-label">{{ m.label }}</span>
             <div class="info-popover-wrap">
-              <button class="info-btn" :title="`¿Por qué importa: ${m.label}?`" aria-label="Información">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <button class="info-btn" aria-label="Información">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                   <circle cx="12" cy="12" r="10"/>
                   <line x1="12" y1="16" x2="12" y2="12"/>
                   <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -133,8 +133,8 @@
             <div class="title-with-info">
               <h3 class="card-title">Ventana Óptima de Publicación</h3>
               <div class="info-popover-wrap">
-                <button class="info-btn" title="Información de ventana horaria">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="info-btn" aria-label="Información">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="16" x2="12" y2="12"/>
                     <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -193,8 +193,8 @@
             <div class="title-with-info">
               <h3 class="card-title">Evolución de Alcance y Audiencia</h3>
               <div class="info-popover-wrap">
-                <button class="info-btn" title="Información de evolución">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="info-btn" aria-label="Información">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="16" x2="12" y2="12"/>
                     <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -233,8 +233,8 @@
             <div class="title-with-info">
               <h3 class="card-title">Distribución por Pilar Doctrinal</h3>
               <div class="info-popover-wrap">
-                <button class="info-btn" title="Información de pilares">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="info-btn" aria-label="Información">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="16" x2="12" y2="12"/>
                     <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -275,8 +275,8 @@
             <div class="title-with-info">
               <h3 class="card-title">Recomendaciones del Algoritmo</h3>
               <div class="info-popover-wrap">
-                <button class="info-btn" title="Información de recomendaciones">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="info-btn" aria-label="Información">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="16" x2="12" y2="12"/>
                     <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -344,8 +344,8 @@
             <div class="title-with-info">
               <h3 class="card-title">Publicaciones con Mayor Impacto</h3>
               <div class="info-popover-wrap">
-                <button class="info-btn" title="Información del ranking">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="info-btn" aria-label="Información">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <circle cx="12" cy="12" r="10"/>
                     <line x1="12" y1="16" x2="12" y2="12"/>
                     <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -404,25 +404,25 @@
             <div class="post-details">
               <p class="post-caption">{{ post.caption || 'Publicación en Instagram' }}</p>
               <div class="post-metrics-row">
-                <span class="p-stat" title="Alcance total">
+                <span class="p-stat">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
                   </svg>
                   {{ post.reach || 0 }}
                 </span>
-                <span class="p-stat" title="Me gusta">
+                <span class="p-stat">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                     <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                   </svg>
                   {{ post.like_count || 0 }}
                 </span>
-                <span class="p-stat" title="Compartidos por DM (Señal #1 de distribución)">
+                <span class="p-stat">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
                   </svg>
                   {{ post.shares || 0 }}
                 </span>
-                <span class="p-stat" title="Guardados">
+                <span class="p-stat">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                   </svg>
@@ -451,8 +451,8 @@
         <div class="title-with-info">
           <span class="pipeline-legend">Flujo Editorial</span>
           <div class="info-popover-wrap">
-            <button class="info-btn" title="Información del pipeline">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="info-btn" aria-label="Información">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="12" y1="16" x2="12" y2="12"/>
                 <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -920,35 +920,52 @@ onMounted(async () => {
 }
 
 .info-btn {
-  background: transparent;
-  border: none;
-  padding: 2px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  color: var(--text-muted);
+  background: #eef6f9;
+  border: 1.5px solid #bce1ec;
+  color: #007da5;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: all var(--transition-fast);
+  padding: 0;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.info-btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: #007da5;
+  stroke-width: 2.3;
 }
 
 .info-btn:hover {
-  color: var(--accent-primary);
-  background: var(--gray-2);
-  transform: scale(1.1);
+  background: #007da5;
+  border-color: #006184;
+  color: #ffffff;
+  transform: scale(1.12);
+  box-shadow: 0 2px 8px rgba(0, 125, 165, 0.35);
+}
+
+.info-btn:hover svg {
+  stroke: #ffffff;
 }
 
 .info-popover {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 8px);
   left: 0;
-  width: 270px;
+  width: 290px;
   background: #ffffff;
   border: 1px solid var(--border-secondary);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-detached), 0 8px 24px rgba(0,0,0,0.12);
-  padding: 12px 14px;
-  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14), 0 2px 6px rgba(0, 0, 0, 0.06);
+  padding: 14px 16px;
+  z-index: 1000;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);

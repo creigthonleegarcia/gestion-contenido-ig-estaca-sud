@@ -1,74 +1,71 @@
-# 🌿 Pilar 1: Inspiración Doctrinal — Propuestas Visuales y Redacción de Posts
+# 🌿 Pilar 1: Inspiración Doctrinal — Guía Editorial y Gráficas
 
-> **Estrategia Algorítmica 2026:**
+> **Estrategia Algorítmica:**
 > - **40% de la cuota editorial** mensual de la cuenta.
-> - **Cero logotipos destacados:** Las imágenes deben sentirse como fotografía artística / documental auténtica para evitar la ceguera publicitaria y elevar hasta un 40% los compartidos por Mensaje Directo (DM).
-> - **Generadas con Freepik (Pikaso Engine)** en formato vertical optimizado para feed (4:5 / 1080x1350px).
+> - **Cero logotipos institucionales:** Se usa solo `@estacalaserena` para evitar el rechazo publicitario y maximizar los compartidos por Mensaje Directo (DM).
+> - **Generadas con Freepik (Magnific)** en formato vertical optimizado para Reels / Historias (9:16 / 1080x1920px).
 
 ---
 
-## 📸 Colección de Publicaciones
+## 🎬 Gráficas para Reels / Historias (Vertical 9:16)
 
-### 1. 🕊️ Post 04: "La Paz que el mundo no puede dar"
-- **Archivo de Imagen:** `04_Paz_En_Cristo_Juan_14_27.jpg`
-- **Concepto Visual:** Fotografía cinematográfica de una persona en oración serena y contemplativa en la costa de La Serena al amanecer con luz dorada filtrada por la bruma marina.
-- **Escritura Base:** Juan 14:27 / Filipenses 4:7
+### 1. 🏔️ Reel 07: "Confía en el Señor con todo tu corazón"
+- **Archivo:** `07_Reel_Proverbios_3_5.jpg`
+- **Escritura:** Proverbios 3:5-6
+- **Ambiente Visual:** Acuarela de montañas con niebla matutina sobre lago sereno, marco con orquídeas blancas y botánicos azul marino con `@estacalaserena`.
+- **Audio sugerido en IG:** Música instrumental suave de piano o violín reflexivo.
 
-#### 📝 Copia para el Post:
+#### 📝 Copia para el Reel / Post:
 ```text
-En medio del ruido y las exigencias de la semana, ¿dónde encuentras tu momento de calma? 🕊️✨
+Cuando el camino no parece claro, ¿en qué o en quién apoyas tu confianza? 🤍🏔️
 
-«La paz os dejo, mi paz os doy; yo no os la doy como el mundo la da. No se turbe vuestro corazón, ni tenga miedo.» — Juan 14:27
+«Confía en Jehová con todo tu corazón, y no te apoyes en tu propia prudencia. Reconócelo en todos tus caminos, y él enderezará tus veredas.» — Proverbios 3:5-6
 
-A veces, todo lo que necesitamos es detenernos un momento, respirar profundo y recordar que el Salvador conoce cada una de nuestras cargas y anhelos. Su paz no depende de que las circunstancias sean perfectas, sino de saber en quién confiamos.
+No tenemos que resolver toda la vida hoy; basta con dar el siguiente paso de fe sabiendo que el Señor va delante nuestro. Su guía nunca llega tarde.
 
-🤍 Guarda esta publicación para cuando necesites un recordatorio de serenidad esta semana, o envíasela por DM a alguien que necesite un abrazo al corazón hoy.
+🕊️ Guarda este Reel para los días donde necesites recordar que no estás solo, o compártelo en tus historias con alguien especial.
 
-#PazEnCristo #Fe #Esperanza #Jesucristo #EstacaLaSerena #LaSerena #Coquimbo #DomingoDePaz #CalmaEspiritual
+#ConfianzaEnDios #Proverbios #Fe #PazInterior #EstacaLaSerena #LaSerena #Coquimbo #Jesucristo #VenSigueme
 ```
-- **Formato recomendado:** Imagen Estática o Carrusel (con versículo en slide 2).
-- **Horario óptimo:** Domingo a las 17:45 hrs.
 
 ---
 
-### 2. 🏛️ Post 05: "Un faro en la noche: El Templo Santo"
-- **Archivo de Imagen:** `05_Templo_Luz_Eterna.jpg`
-- **Concepto Visual:** Casa del Señor iluminada al atardecer bajo un cielo crepuscular estrellado, jardines de olivos y flores en primer plano.
-- **Escritura Base:** Doctrina y Convenios 109:22 / Salmos 27:4
+### 2. 🌊 Reel 08: "Sé fuerte y valiente, no temas"
+- **Archivo:** `08_Reel_Josue_1_9.jpg`
+- **Escritura:** Josué 1:9
+- **Ambiente Visual:** Acuarela de acantilados costeros de La Serena al atardecer dorado con olas calmas y marco botánico refinado con `@estacalaserena`.
+- **Audio sugerido en IG:** Sonido ambiental de olas de mar + melodía inspiradora suave.
 
-#### 📝 Copia para el Post:
+#### 📝 Copia para el Reel / Post:
 ```text
-En un mundo lleno de cambios rápidos y desafíos, la Casa del Señor permanece como un ancla inamovible de luz y verdad. 🏛️🌟
+Cualquiera sea el desafío o prueba que estés enfrentando hoy, recuerda esta promesa divina: 🌅✨
 
-«Y te pedimos, Padre Santo, que tus siervos salgan de esta casa armados con tu poder, y que tu nombre esté sobre ellos, y tu gloria los rodee...» — DyC 109:22
+«Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes, porque Jehová tu Dios estará contigo en dondequiera que vayas.» — Josué 1:9
 
-El templo es más que una arquitectura hermosa; es el santuario donde el cielo y la tierra se encuentran, donde las familias se unen para la eternidad y donde encontramos la perspectiva divina para nuestro día a día.
+El valor no significa ausencia de miedo, sino la certeza de que Dios camina a tu lado en cada marea alta y en cada momento de incertidumbre.
 
-🌿 ¿Qué sentimiento o recuerdo especial atesoras de tu última visita a la Casa del Señor? Cuéntanos en los comentarios o comparte este recordatorio con tu familia. 🤍
+🌊 Comparte este mensaje por DM con ese amigo o familiar que necesita un impulso de fortaleza hoy. 💌
 
-#CasaDelSeñor #TemploSud #LuzDelMundo #EstacaLaSerena #Eternidad #FamiliasEternas #PazEspiritual #LaSerenaChile
+#SeFuerteYValiente #Josue19 #FuerzaEspiritual #EstacaLaSerena #Esperanza #LaSerenaChile #FeInquebrantable #SirveAhora
 ```
-- **Formato recomendado:** Imagen Estática en alta resolución.
-- **Horario óptimo:** Jueves a las 18:00 hrs.
 
 ---
 
-### 3. 👨‍👩‍👧‍👦 Post 06: "El tesoro más grande: Juntos en el camino"
-- **Archivo de Imagen:** `06_Familia_Eterna_Amor.jpg`
-- **Concepto Visual:** Familia cálida caminando junta y sonriente al atardecer en los paisajes del Valle de Elqui, reflejando unión, risas genuinas y afecto sincero.
-- **Doctrina Base:** La Familia: Una Proclamación para el Mundo
+### 3. 🌾 Reel 09: "El gozo depende de nuestro enfoque"
+- **Archivo:** `09_Reel_Pdte_Nelson_Gozo.jpg`
+- **Cita:** Presidente Russell M. Nelson (Conferencia General)
+- **Ambiente Visual:** Acuarela de colinas soleadas del Valle de Elqui y río sereno, marco floral azul marino y crema con `@estacalaserena`.
+- **Audio sugerido en IG:** Himno instrumental de fondo (*"Paz, cálmense"* o *"La luz de Dios"* en guitarra acústica).
 
-#### 📝 Copia para el Post:
+#### 📝 Copia para el Reel / Post:
 ```text
-Las cosas más valiosas de esta vida no se compran en ninguna tienda; se construyen paso a paso, risa a risa, en el hogar. 🌾💛
+El gozo más profundo no surge cuando todo es perfecto afuera, sino cuando nuestro corazón está centrado en Él. 🌿💛
 
-«La felicidad en la vida familiar tiene mayor probabilidad de lograrse cuando se fundamenta en las enseñanzas del Señor Jesucristo.» — La Familia: Una Proclamación para el Mundo
+«El gozo que sentimos tiene poco que ver con las circunstancias de nuestra vida y mucho con el enfoque de nuestra vida.» — Presidente Russell M. Nelson
 
-Cada conversación sincera, cada abrazo a tiempo y cada momento de apoyo mutuo forja lazos sagrados que no terminan con el tiempo. El mayor éxito siempre ocurrirá dentro de las cuatro paredes de nuestro propio hogar.
+Cuando enfocamos nuestra mente en el Salvador y Su evangelio, podemos experimentar paz y gratitud aun en medio de los días difíciles.
 
-✨ Envía este mensaje por Mensaje Directo (DM) a tus padres, hijos, cónyuge o amigos para recordarles lo importantes y amados que son hoy. 💌
+✨ ¿En qué bendición eliges enfocar tu corazón hoy? Cuéntanos en los comentarios o guarda este recordatorio para tu semana. 🕊️
 
-#FamiliaEterna #AmorFamiliar #HogarCristocentrico #ValleDelElqui #EstacaLaSerena #Gratitud #LaSerena #LazosEternos
+#PresidenteNelson #ConferenciaGeneral #GozoEnCristo #EstacaLaSerena #ValleDelElqui #PazDelAlma #EnfoqueEterno #LaSerena
 ```
-- **Formato recomendado:** Carrusel con reflexiones cortas para padres e hijos.
-- **Horario óptimo:** Sábado a las 18:00 hrs.

@@ -107,7 +107,12 @@
 
           <div class="demo-cards">
             <button class="demo-card" @click="fillDemo('creador@estaca.cl')">
-              <div class="demo-avatar" style="background: #007da5;">📝</div>
+              <div class="demo-avatar" style="background: #007da5;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+              </div>
               <div class="demo-info">
                 <span class="demo-role">Creador de Contenido</span>
                 <span class="demo-email">creador@estaca.cl</span>
@@ -116,7 +121,11 @@
             </button>
 
             <button class="demo-card" @click="fillDemo('aprobador@estaca.cl')">
-              <div class="demo-avatar" style="background: #318d43;">✅</div>
+              <div class="demo-avatar" style="background: #318d43;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
               <div class="demo-info">
                 <span class="demo-role">Aprobador — Pdte. Estaca</span>
                 <span class="demo-email">aprobador@estaca.cl</span>

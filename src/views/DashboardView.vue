@@ -10,7 +10,13 @@
             :alt="profile.name"
             class="profile-avatar"
           />
-          <div v-else class="avatar-fallback">⛪</div>
+          <div v-else class="avatar-fallback">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M3 21h18"/>
+              <path d="M5 21V7l7-4 7 4v14"/>
+              <path d="M9 21v-6h6v6"/>
+            </svg>
+          </div>
           <span class="live-dot" :title="metaConnected ? 'Conexión activa' : 'Sin conexión'"></span>
         </div>
 
@@ -91,7 +97,12 @@
     <section class="peak-hours-card card" v-if="overview?.bestHours?.length">
       <div class="peak-header">
         <div class="peak-title-wrap">
-          <div class="peak-icon">⏰</div>
+          <div class="peak-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
           <div>
             <h3 class="card-title">Ventana Óptima de Publicación</h3>
             <p class="card-subtitle">Seguidores activos por hora en La Serena / Coquimbo</p>
@@ -169,7 +180,6 @@
             :style="{ borderLeftColor: rec.color }"
           >
             <div class="rec-top">
-              <span class="rec-icon">{{ rec.icon }}</span>
               <div class="rec-title-wrap">
                 <h4 class="rec-title">{{ rec.title }}</h4>
                 <span v-if="rec.realtime" class="live-pill">En vivo</span>
@@ -180,7 +190,7 @@
           </article>
 
           <div v-if="recommendations.length === 0" class="empty-state">
-            <p>Todo el contenido está optimizado 🎉</p>
+            <p>Todo el contenido está optimizado</p>
           </div>
         </div>
       </div>
@@ -213,7 +223,13 @@
                 :alt="post.caption"
                 loading="lazy"
               />
-              <div v-else class="post-thumb-fallback">📸</div>
+              <div v-else class="post-thumb-fallback">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
             </div>
 
             <div class="post-details">

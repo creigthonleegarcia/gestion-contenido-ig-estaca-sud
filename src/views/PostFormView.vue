@@ -3,139 +3,254 @@
     <div class="page-header">
       <div>
         <h1 class="page-title">{{ isEdit ? 'Editar Publicación' : 'Nueva Publicación' }}</h1>
-        <p class="page-subtitle">{{ isEdit ? 'Modifica el contenido antes de enviarlo' : 'Crea contenido alineado a la estrategia editorial' }}</p>
+        <p class="page-subtitle">{{ isEdit ? 'Modifica el contenido antes de someterlo al proceso de revisión' : 'Crea contenido alineado a la estrategia editorial y doctrina oficial' }}</p>
       </div>
-      <router-link to="/content" class="btn btn-ghost">← Volver</router-link>
+      <router-link to="/content" class="btn btn-secondary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        <span>Volver a Contenido</span>
+      </router-link>
     </div>
 
     <div class="form-layout">
+      <!-- Main Form Column -->
       <div class="form-main card">
         <div class="form-group">
-          <label>Título *</label>
-          <input v-model="form.title" placeholder="Ej: Paz en el Salvador" required />
+          <label class="form-label">Título de la Publicación *</label>
+          <input v-model="form.title" placeholder="Ej: Paz en el Salvador — Conferencia General" class="form-control" required />
         </div>
 
         <div class="form-group">
-          <label>Caption / Descripción</label>
-          <textarea v-model="form.caption" rows="5"
-            placeholder="Escribe el texto de la publicación..."></textarea>
-          <span class="char-count">{{ (form.caption || '').length }} / 2,200</span>
+          <label class="form-label">Texto / Caption de Instagram</label>
+          <textarea
+            v-model="form.caption"
+            rows="6"
+            placeholder="Escribe el mensaje doctrinal o informativo para acompañar la imagen..."
+            class="form-control textarea-field"
+          ></textarea>
+          <div class="caption-footer">
+            <span class="char-count" :class="{ 'char-warning': (form.caption || '').length > 2000 }">
+              {{ (form.caption || '').length }} / 2,200 caracteres
+            </span>
+          </div>
         </div>
 
         <div class="form-group">
-          <label>Hashtags</label>
-          <input v-model="form.hashtags" placeholder="#EstacaLaSerena #VenSígueme #SUD" />
+          <label class="form-label">Hashtags Recomendados</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">#</span>
+            <input v-model="form.hashtags" placeholder="EstacaLaSerena VenSigueme SudChile IglesiaDeJesucristo" class="form-control with-icon" />
+          </div>
         </div>
 
-        <!-- Logo/Branding Guidance Banner -->
+        <!-- Dynamic Logo & Branding Guidance Banner -->
         <div v-if="logoGuidance.show" class="logo-guidance" :class="logoGuidance.type">
-          <div class="lg-title">{{ logoGuidance.title }}</div>
+          <div class="lg-header">
+            <svg v-if="logoGuidance.type === 'warning'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="16" x2="12" y2="12"/>
+              <line x1="12" y1="8" x2="12.01" y2="8"/>
+            </svg>
+            <span class="lg-title">{{ logoGuidance.title }}</span>
+          </div>
           <p class="lg-text">{{ logoGuidance.text }}</p>
           <details class="lg-details">
-            <summary>📊 Datos clave de la investigación</summary>
+            <summary>Datos clave del algoritmo de Instagram (2026)</summary>
             <ul>
-              <li><strong>Adam Mosseri (CEO Instagram):</strong> Tu propio logo NO es penalizado por el algoritmo</li>
-              <li><strong>Pero:</strong> la audiencia scrollea más rápido si percibe "publicidad" → menos engagement → menos alcance</li>
-              <li><strong>Señal #1 del algoritmo en 2026:</strong> Envíos por DM (compartidos), no likes</li>
-              <li><strong>Mejor estrategia:</strong> Identidad visual (colores + tipografía) sin estampar logo</li>
-              <li><strong>Sí penalizado:</strong> Marcas de agua de TikTok, YouTube o CapCut</li>
+              <li><strong>Adam Mosseri (CEO Instagram):</strong> Tu propio logo no es penalizado algorítmicamente.</li>
+              <li><strong>Comportamiento de la audiencia:</strong> Logotipos prominentes generan "ceguera publicitaria" en publicaciones espirituales e inspiracionales.</li>
+              <li><strong>Señal #1 de distribución:</strong> Los envíos por mensaje directo (DM) impulsan más el alcance que los me gusta.</li>
+              <li><strong>Regla de oro:</strong> Prioriza identidad visual estética (colores institucionales y tipografía legible) sin sobrecargar de logos.</li>
             </ul>
           </details>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Pilar Estratégico</label>
-            <select v-model="form.pillar_id">
-              <option value="">Seleccionar pilar</option>
-              <option v-for="p in pillars" :key="p.id" :value="p.id">{{ p.icon }} {{ p.name }}</option>
+            <label class="form-label">Pilar Estratégico</label>
+            <select v-model="form.pillar_id" class="form-control">
+              <option value="">Seleccionar pilar doctrinal</option>
+              <option v-for="p in pillars" :key="p.id" :value="p.id">{{ p.name }}</option>
             </select>
           </div>
 
           <div class="form-group">
-            <label>Formato</label>
-            <select v-model="form.format">
-              <option value="static">📷 Imagen estática</option>
-              <option value="carousel">🎠 Carrusel</option>
-              <option value="reel">🎬 Reel (video)</option>
-              <option value="story">📱 Story</option>
+            <label class="form-label">Formato de Contenido</label>
+            <select v-model="form.format" class="form-control">
+              <option value="static">Imagen Estática (1:1 o 4:5)</option>
+              <option value="carousel">Carrusel Deslizable</option>
+              <option value="reel">Reel de Video (9:16)</option>
+              <option value="story">Historia (24 hrs)</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label>Fecha y hora programada</label>
-          <input type="datetime-local" v-model="form.scheduled_at" />
+          <label class="form-label">Fecha y Hora de Publicación Sugerida</label>
+          <input type="datetime-local" v-model="form.scheduled_at" class="form-control" />
+          <span class="hint-text">Horario recomendado según audiencia activa: 18:00 hrs.</span>
         </div>
 
         <div class="form-group">
-          <label>Imagen / Video</label>
+          <label class="form-label">Material Multimedia (Imagen / Video)</label>
           <div class="media-uploader" @dragover.prevent @drop.prevent="handleDrop">
-            <input type="file" ref="fileInput" @change="handleFileSelect"
-                   accept="image/*,video/*" style="display:none" />
-            <div v-if="preview" class="media-preview">
-              <img v-if="isImage" :src="preview" alt="Preview" />
-              <video v-else :src="preview" controls />
-              <button class="remove-media" @click="removeMedia">✕</button>
+            <input
+              type="file"
+              ref="fileInput"
+              @change="handleFileSelect"
+              accept="image/*,video/*"
+              style="display:none"
+            />
+            <div v-if="preview" class="media-preview-box">
+              <img v-if="isImage" :src="preview" alt="Preview" class="preview-img" />
+              <video v-else :src="preview" controls class="preview-video" />
+              <button class="remove-media-btn" @click="removeMedia" title="Quitar archivo">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="18" y1="6" x2="6" y2="18"/>
+                  <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
             </div>
-            <div v-else class="upload-placeholder" @click="$refs.fileInput.click()">
-              <span class="upload-icon">📤</span>
-              <p>Arrastra un archivo o haz clic para seleccionar</p>
-              <p class="upload-hint">JPG, PNG, GIF, MP4, MOV — Máx 50MB</p>
+            <div v-else class="upload-dropzone" @click="$refs.fileInput.click()">
+              <div class="upload-icon-circle">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <p class="upload-primary-text">Arrastra un archivo o haz clic para examinar</p>
+              <p class="upload-subtext">JPG, PNG, MP4, MOV — Hasta 50 MB</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Sidebar: Checklist + Preview -->
-      <div class="form-sidebar">
-        <div class="card norms-card">
-          <h3 class="card-title">📋 Checklist Normativo</h3>
-          <div class="checklist">
-            <label v-for="(item, i) in checklist" :key="i" class="check-item">
-              <input type="checkbox" v-model="item.checked" />
-              <span>{{ item.label }}</span>
+      <!-- Right Column: Norms Checklist & Instagram Preview -->
+      <aside class="form-sidebar">
+        <!-- Norms Checklist -->
+        <div class="card checklist-card">
+          <div class="sidebar-card-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <h3 class="sidebar-card-title">Checklist Normativo</h3>
+          </div>
+
+          <div class="checklist-items">
+            <label v-for="(item, i) in checklist" :key="i" class="check-row">
+              <input type="checkbox" v-model="item.checked" class="check-box" />
+              <span class="check-text">{{ item.label }}</span>
             </label>
           </div>
-          <div class="checklist-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" :style="{ width: checklistProgress + '%' }"></div>
+
+          <div class="checklist-footer">
+            <div class="progress-track">
+              <div class="progress-bar-fill" :style="{ width: `${checklistProgress}%` }"></div>
             </div>
-            <span>{{ checklistChecked }}/{{ checklist.length }}</span>
+            <span class="progress-label">{{ checklistChecked }}/{{ checklist.length }} completados</span>
           </div>
         </div>
 
+        <!-- Instagram Device Preview -->
         <div class="card preview-card">
-          <h3 class="card-title">👁️ Vista Previa</h3>
-          <div class="ig-preview">
-            <div class="ig-header">
-              <div class="ig-avatar">⛪</div>
-              <div class="ig-handle">
-                <span class="ig-name">estaca_laserena</span>
-                <span class="ig-loc">La Serena, Chile</span>
+          <div class="sidebar-card-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+            <h3 class="sidebar-card-title">Vista Previa Instagram</h3>
+          </div>
+
+          <div class="ig-mockup">
+            <!-- IG Header -->
+            <div class="ig-mockup-header">
+              <div class="ig-user-avatar">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 21h18"/>
+                  <path d="M5 21V7l7-4 7 4v14"/>
+                  <path d="M9 21v-6h6v6"/>
+                </svg>
+              </div>
+              <div class="ig-user-meta">
+                <span class="ig-user-name">estacalaserena</span>
+                <span class="ig-user-sub">La Serena, Chile</span>
+              </div>
+              <div class="ig-dots">•••</div>
+            </div>
+
+            <!-- IG Media -->
+            <div class="ig-mockup-media">
+              <img v-if="preview && isImage" :src="preview" alt="Preview" class="ig-img" />
+              <div v-else class="ig-media-placeholder">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
               </div>
             </div>
-            <div class="ig-media">
-              <img v-if="preview && isImage" :src="preview" alt="" />
-              <div v-else class="ig-placeholder">{{ form.format === 'reel' ? '🎬' : '📷' }}</div>
+
+            <!-- IG Action Icons Bar -->
+            <div class="ig-actions-bar">
+              <div class="ig-left-actions">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"/>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                </svg>
+              </div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+              </svg>
             </div>
-            <div class="ig-caption">
-              <span class="ig-caption-user">estaca_laserena </span>
-              <span>{{ truncate(form.caption, 120) }}</span>
+
+            <!-- IG Caption -->
+            <div class="ig-caption-block">
+              <span class="ig-caption-author">estacalaserena </span>
+              <span class="ig-caption-content">{{ truncate(form.caption || 'Escribe una descripción para ver cómo se verá en el feed de Instagram.', 110) }}</span>
             </div>
-            <div class="ig-hashtags" v-if="form.hashtags">{{ form.hashtags }}</div>
+
+            <div class="ig-tags-block" v-if="form.hashtags">
+              {{ form.hashtags }}
+            </div>
           </div>
         </div>
 
-        <div class="form-actions">
-          <button class="btn btn-ghost" @click="saveDraft" :disabled="saving">
-            💾 Guardar borrador
+        <!-- Form Submission Actions -->
+        <div class="sidebar-actions">
+          <button class="btn btn-secondary btn-full" @click="saveDraft" :disabled="saving">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            <span>Guardar como Borrador</span>
           </button>
-          <button class="btn btn-primary" @click="saveAndSubmit" :disabled="saving">
-            📤 Guardar y enviar a revisión
+
+          <button class="btn btn-primary btn-full" @click="saveAndSubmit" :disabled="saving">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+            <span>Enviar a Revisión</span>
           </button>
         </div>
-      </div>
+      </aside>
     </div>
   </div>
 </template>
@@ -154,8 +269,13 @@ const isEdit = computed(() => !!route.params.id)
 const pillars = computed(() => pillarsStore.pillars)
 
 const form = reactive({
-  title: '', caption: '', hashtags: '', pillar_id: '',
-  format: 'static', scheduled_at: '', media: null
+  title: '',
+  caption: '',
+  hashtags: '',
+  pillar_id: '',
+  format: 'static',
+  scheduled_at: '',
+  media: null
 })
 
 const preview = ref(null)
@@ -163,7 +283,6 @@ const isImage = ref(true)
 const saving = ref(false)
 const fileInput = ref(null)
 
-// Detect if selected pillar is "Inspiración" (pillar 1)
 const isInspirationPillar = computed(() => {
   const p = pillars.value.find(pl => pl.id === Number(form.pillar_id))
   return p?.slug === 'inspiracion' || p?.name?.toLowerCase().includes('inspiraci')
@@ -181,34 +300,37 @@ const isInfoPillar = computed(() => {
 
 const logoGuidance = computed(() => {
   if (isInspirationPillar.value) return {
-    show: true, type: 'warning',
-    title: '⚠️ Evitar logo prominente — Pilar Inspiración',
-    text: 'La investigación muestra que el contenido inspiracional funciona mejor sin logo visible. Un logo grande activa el "filtro anti-publicidad" del usuario, reduciendo engagement. Usa identidad visual (colores/tipografía) en su lugar. El nombre de usuario y foto de perfil ya identifican la cuenta.'
+    show: true,
+    type: 'warning',
+    title: 'Pilar Inspiración — Evitar logotipo prominente',
+    text: 'El contenido espiritual funciona significativamente mejor sin logotipo estampado. Un logo visible activa la percepción de anuncio en el espectador, reduciendo envíos por mensaje directo y engagement. La cuenta ya queda identificada por la foto de perfil.'
   }
   if (isServicePillar.value) return {
-    show: true, type: 'tip',
-    title: '💡 Logo sutil recomendado — Pilar Servicio',
-    text: 'Para contenido de SirveAhora, un logo pequeño como "firma" es aceptable, especialmente si será reposteado por municipalidades u ONG. Prioriza que las personas sean protagonistas de la imagen.'
+    show: true,
+    type: 'tip',
+    title: 'Pilar Servicio — Logotipo sutil permitido',
+    text: 'Para actividades comunitarias y proyectos SirveAhora, se permite un logo pequeño o discreto como firma institucional para compartir con organizaciones o municipalidades.'
   }
   if (isInfoPillar.value) return {
-    show: true, type: 'tip',
-    title: '📋 Logo aceptable — Pilar Informativo',
-    text: 'En infografías, calendarios y carteleras el logo aporta credibilidad institucional. Úsalo de forma discreta, sin dominar la composición visual.'
+    show: true,
+    type: 'tip',
+    title: 'Pilar Informativo — Logotipo institucional aceptado',
+    text: 'En infografías, carteleras oficiales y anuncios de conferencias, el logotipo otorga respaldo institucional.'
   }
   return { show: false }
 })
 
 const checklist = reactive([
-  { label: 'Citas doctrinales provienen de fuentes oficiales', checked: false },
-  { label: 'Nombres correctamente escritos', checked: false },
-  { label: 'Permiso de imagen obtenido (menores de edad)', checked: false },
-  { label: 'Sin promoción de empresas ni causas políticas', checked: false },
-  { label: 'Lenguaje inclusivo y comprensible', checked: false },
-  { label: 'Formato técnico correcto (9:16 para Reels)', checked: false },
-  { label: 'Subtítulos incluidos (si es video)', checked: false },
-  { label: 'Sin marcas de agua de TikTok/YouTube/CapCut', checked: false },
-  { label: 'Logo: ausente o sutil según pilar (ver guía)', checked: false },
-  { label: 'Identidad visual consistente (colores y tipografía institucionales)', checked: false },
+  { label: 'Citas doctrinales provienen de fuentes oficiales de la Iglesia', checked: false },
+  { label: 'Nombres de líderes y barrios correctamente escritos', checked: false },
+  { label: 'Autorización de imagen obtenida (especialmente menores)', checked: false },
+  { label: 'Sin publicidad comercial ni causas de terceros', checked: false },
+  { label: 'Tono solemne, edificante e inclusivo', checked: false },
+  { label: 'Formato técnico optimizado (4:5 para imagen, 9:16 para Reels)', checked: false },
+  { label: 'Subtítulos incluidos en videos', checked: false },
+  { label: 'Sin marcas de agua de apps externas (TikTok, CapCut)', checked: false },
+  { label: 'Uso de logotipo apropiado según el pilar estratégico', checked: false },
+  { label: 'Identidad visual y colores institucionales respetados', checked: false },
 ])
 
 const checklistChecked = computed(() => checklist.filter(c => c.checked).length)
@@ -263,7 +385,9 @@ async function saveDraft() {
       await postsStore.createPost(fd)
     }
     router.push('/content')
-  } finally { saving.value = false }
+  } finally {
+    saving.value = false
+  }
 }
 
 async function saveAndSubmit() {
@@ -278,11 +402,16 @@ async function saveAndSubmit() {
     }
     await postsStore.submitForReview(post.id)
     router.push('/content')
-  } finally { saving.value = false }
+  } finally {
+    saving.value = false
+  }
 }
 
 onMounted(async () => {
   await pillarsStore.fetchPillars()
+  if (route.query.date) {
+    form.scheduled_at = `${route.query.date}T18:00`
+  }
   if (isEdit.value) {
     const post = await postsStore.fetchPost(route.params.id)
     form.title = post.title || ''
@@ -306,296 +435,457 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.post-form-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-20);
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-16);
 }
 
 .form-layout {
   display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 24px;
+  grid-template-columns: 1fr 380px;
+  gap: var(--sp-24);
   align-items: start;
 }
 
-.form-main { padding: 28px; }
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+.form-main {
+  padding: 28px;
+  background: var(--bg-level1);
+  border: 1px solid var(--border-tertiary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
 }
 
-.form-group { margin-bottom: 18px; }
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--gray-2);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.form-control:focus {
+  background: #ffffff;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(0, 125, 165, 0.12);
+}
+
+.textarea-field {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.caption-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
 
 .char-count {
   font-size: 0.72rem;
   color: var(--text-muted);
-  text-align: right;
-  display: block;
-  margin-top: 4px;
+}
+.char-warning {
+  color: var(--accent-danger);
 }
 
-.media-uploader {
-  border: 2px dashed var(--border-default);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  transition: border-color var(--transition-fast);
-}
-
-.media-uploader:hover { border-color: var(--accent-primary); }
-
-.upload-placeholder {
-  padding: 40px;
-  text-align: center;
-  cursor: pointer;
-  color: var(--text-muted);
-}
-
-.upload-icon { font-size: 2.5rem; display: block; margin-bottom: 12px; }
-.upload-hint { font-size: 0.72rem; margin-top: 8px; }
-
-.media-preview {
+.input-icon-wrap {
   position: relative;
-  max-height: 300px;
+  display: flex;
+  align-items: center;
 }
 
-.media-preview img, .media-preview video {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-}
-
-.remove-media {
+.input-icon {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-}
-
-.form-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: sticky;
-  top: 32px;
-}
-
-.norms-card { padding: 20px; }
-
-.card-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-
-.checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.check-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  cursor: pointer;
-  line-height: 1.4;
-}
-
-.check-item input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
-  accent-color: var(--accent-success);
-  flex-shrink: 0;
-}
-
-.checklist-progress {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.75rem;
+  left: 12px;
   color: var(--text-muted);
+  font-weight: 600;
 }
 
-.progress-bar {
-  flex: 1;
-  height: 4px;
-  background: var(--bg-input);
-  border-radius: 2px;
-  overflow: hidden;
+.form-control.with-icon {
+  padding-left: 28px;
 }
 
-.progress-fill {
-  height: 100%;
-  background: var(--accent-success);
-  border-radius: 2px;
-  transition: width var(--transition-normal);
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-16);
 }
 
-/* Instagram Preview */
-.preview-card { padding: 20px; }
-
-.ig-preview {
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--bg-primary);
-}
-
-.ig-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-}
-
-.ig-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-primary), #3a7bc8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-}
-
-.ig-handle { display: flex; flex-direction: column; }
-.ig-name { font-size: 0.8rem; font-weight: 700; }
-.ig-loc { font-size: 0.65rem; color: var(--text-muted); }
-
-.ig-media {
-  width: 100%;
-  aspect-ratio: 1;
-  background: var(--bg-input);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ig-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.ig-placeholder {
-  font-size: 3rem;
-  opacity: 0.2;
-}
-
-.ig-caption {
-  padding: 10px 12px 4px;
-  font-size: 0.78rem;
-  line-height: 1.5;
-}
-
-.ig-caption-user { font-weight: 700; }
-
-.ig-hashtags {
-  padding: 2px 12px 10px;
+.hint-text {
   font-size: 0.72rem;
-  color: var(--accent-primary);
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: block;
 }
 
-.form-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-actions .btn {
-  justify-content: center;
-}
-
-/* Logo/Branding Guidance Banner */
+/* ── Logo Guidance ── */
 .logo-guidance {
-  padding: 16px 18px;
+  padding: 14px 18px;
   border-radius: var(--radius-sm);
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   border-left: 4px solid;
-  animation: fadeIn 0.3s ease;
 }
 
 .logo-guidance.warning {
-  background: rgba(245, 166, 35, 0.08);
+  background: #fff8f0;
   border-color: var(--accent-warning);
 }
 
 .logo-guidance.tip {
-  background: rgba(74, 144, 217, 0.06);
+  background: #f0f9fc;
   border-color: var(--accent-primary);
 }
 
-.lg-title {
-  font-size: 0.88rem;
-  font-weight: 700;
+.lg-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
-.logo-guidance.warning .lg-title { color: var(--accent-warning); }
-.logo-guidance.tip .lg-title { color: var(--accent-primary); }
+.logo-guidance.warning .lg-header { color: var(--accent-warning); }
+.logo-guidance.tip .lg-header { color: var(--accent-primary); }
 
-.lg-text {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 8px;
+.lg-title {
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
-.lg-details {
-  margin-top: 8px;
+.lg-text {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 8px 0;
 }
 
 .lg-details summary {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
-  padding: 4px 0;
-  transition: color var(--transition-fast);
-}
-
-.lg-details summary:hover {
-  color: var(--text-primary);
 }
 
 .lg-details ul {
-  list-style: none;
-  padding: 8px 0 0 0;
+  margin: 8px 0 0 0;
+  padding-left: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .lg-details li {
   font-size: 0.75rem;
   color: var(--text-secondary);
-  line-height: 1.5;
-  padding-left: 14px;
-  position: relative;
+  line-height: 1.4;
 }
 
-.lg-details li::before {
-  content: '→';
-  position: absolute;
-  left: 0;
+/* ── Media Uploader ── */
+.media-uploader {
+  border: 2px dashed var(--border-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--gray-2);
+  transition: all var(--transition-fast);
+}
+
+.media-uploader:hover {
+  border-color: var(--accent-primary);
+  background: #f4fafd;
+}
+
+.upload-dropzone {
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gray-3);
   color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.upload-primary-text {
+  font-size: 0.84rem;
   font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+}
+
+.upload-subtext {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.media-preview-box {
+  position: relative;
+  max-height: 320px;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-img, .preview-video {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+}
+
+.remove-media-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.remove-media-btn:hover {
+  background: var(--accent-danger);
+}
+
+/* ── Sidebar Column ── */
+.form-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-16);
+  position: sticky;
+  top: 24px;
+}
+
+.checklist-card, .preview-card {
+  padding: 18px 20px;
+  background: var(--bg-level1);
+  border: 1px solid var(--border-tertiary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raised);
+}
+
+.sidebar-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+.sidebar-card-title {
+  font: 700 0.875rem/1.2 var(--font-serif);
+  margin: 0;
+}
+
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.check-box {
+  margin-top: 2px;
+  accent-color: var(--accent-success);
+  flex-shrink: 0;
+}
+
+.checklist-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--border-tertiary);
+  padding-top: 10px;
+}
+
+.progress-track {
+  height: 4px;
+  background: var(--gray-3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--accent-success);
+  transition: width var(--transition-normal);
+}
+
+.progress-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* ── IG Mockup ── */
+.ig-mockup {
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.ig-mockup-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--gray-3);
+}
+
+.ig-user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ig-user-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ig-user-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #212225;
+}
+
+.ig-user-sub {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+}
+
+.ig-dots {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.ig-mockup-media {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--gray-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ig-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ig-media-placeholder {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
+
+.ig-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px 4px;
+  color: #212225;
+}
+
+.ig-left-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.ig-caption-block {
+  padding: 4px 10px 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: #212225;
+}
+
+.ig-caption-author {
+  font-weight: 700;
+}
+
+.ig-tags-block {
+  padding: 0 10px 8px;
+  font-size: 0.72rem;
+  color: var(--accent-primary);
+  word-break: break-word;
+}
+
+/* ── Sidebar Actions ── */
+.sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-full {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 980px) {
+  .form-layout {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

@@ -311,18 +311,18 @@
             class="rec-item"
             :style="{ borderLeftColor: rec.color || '#007da5' }"
           >
-            <div class="rec-top">
-              <div class="rec-title-wrap">
-                <h4 class="rec-title">{{ rec.title }}</h4>
+            <div class="rec-header">
+              <div class="rec-tags-row">
                 <span v-if="rec.ai" class="ai-spark-pill">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                     <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
                   </svg>
                   IA OpenAI
                 </span>
                 <span v-else-if="rec.realtime" class="live-pill">En vivo</span>
+                <span class="badge" :class="`badge-${String(rec.priority).toLowerCase()}`">{{ rec.priority }}</span>
               </div>
-              <span class="badge" :class="`badge-${String(rec.priority).toLowerCase()}`">{{ rec.priority }}</span>
+              <h4 class="rec-title">{{ rec.title }}</h4>
             </div>
             <p class="rec-desc">{{ rec.description }}</p>
             <div v-if="rec.tip" class="rec-tip-box">
@@ -1179,8 +1179,10 @@ onMounted(async () => {
 /* ── Charts Grid ── */
 .charts-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: var(--sp-16);
+  width: 100%;
+  min-width: 0;
 }
 
 .chart-card {
@@ -1189,6 +1191,10 @@ onMounted(async () => {
   border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-raised);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .card-header-bar {
@@ -1196,6 +1202,7 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  min-width: 0;
 }
 
 .chart-badge {
@@ -1204,12 +1211,14 @@ onMounted(async () => {
   background: var(--gray-2);
   padding: 3px 8px;
   border-radius: var(--radius-pill);
+  flex-shrink: 0;
 }
 
 .canvas-wrapper {
   position: relative;
   height: 240px;
   width: 100%;
+  min-width: 0;
 }
 
 .doughnut-wrap {
@@ -1219,8 +1228,10 @@ onMounted(async () => {
 /* ── Bottom Grid ── */
 .bottom-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   gap: var(--sp-16);
+  width: 100%;
+  min-width: 0;
 }
 
 .recommendations-card,
@@ -1232,6 +1243,10 @@ onMounted(async () => {
   box-shadow: var(--shadow-raised);
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .recs-count {
@@ -1241,6 +1256,7 @@ onMounted(async () => {
   color: var(--accent-primary);
   border-radius: var(--radius-pill);
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .recommendations-list {
@@ -1248,6 +1264,8 @@ onMounted(async () => {
   flex-direction: column;
   gap: 10px;
   flex: 1;
+  min-width: 0;
+  width: 100%;
 }
 
 .rec-item {
@@ -1256,6 +1274,10 @@ onMounted(async () => {
   border-left: 3px solid;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   transition: all var(--transition-fast);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .rec-item:hover {
@@ -1263,24 +1285,29 @@ onMounted(async () => {
   transform: translateX(2px);
 }
 
-.rec-top {
+.rec-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 4px;
   margin-bottom: 4px;
+  min-width: 0;
 }
 
-.rec-title-wrap {
+.rec-tags-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
+  width: 100%;
 }
 
 .rec-title {
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin: 0;
+  line-height: 1.35;
+  word-break: break-word;
 }
 
 .live-pill {
@@ -1311,6 +1338,7 @@ onMounted(async () => {
   color: var(--text-secondary);
   line-height: 1.4;
   margin: 0 0 6px 0;
+  word-break: break-word;
 }
 
 .rec-tip-box {
@@ -1321,6 +1349,9 @@ onMounted(async () => {
   background: #ffffff;
   border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-sm);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .tip-mini-tag {
@@ -1328,12 +1359,14 @@ onMounted(async () => {
   font-weight: 800;
   color: #15803d;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .tip-mini-text {
   font-size: 0.72rem;
   color: #166534;
   line-height: 1.3;
+  word-break: break-word;
 }
 
 /* ── Top Posts Ranking ── */
@@ -1341,6 +1374,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+  width: 100%;
 }
 
 .top-post-card {
@@ -1354,6 +1389,10 @@ onMounted(async () => {
   text-decoration: none;
   color: inherit;
   transition: all var(--transition-fast);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .top-post-card:hover {
@@ -1367,6 +1406,7 @@ onMounted(async () => {
   font: 700 0.85rem var(--font-serif);
   color: var(--text-muted);
   min-width: 22px;
+  flex-shrink: 0;
 }
 
 .post-media-wrap {
@@ -1397,6 +1437,7 @@ onMounted(async () => {
 .post-details {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .post-caption {
@@ -1406,6 +1447,9 @@ onMounted(async () => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
+  width: 100%;
+  max-width: 100%;
   margin: 0 0 4px 0;
 }
 
@@ -1415,17 +1459,20 @@ onMounted(async () => {
   gap: 10px;
   font-size: 0.7rem;
   color: var(--text-muted);
+  min-width: 0;
 }
 
 .p-stat {
   display: inline-flex;
   align-items: center;
   gap: 3px;
+  flex-shrink: 0;
 }
 
 .post-arrow {
   color: var(--text-muted);
   transition: transform var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .top-post-card:hover .post-arrow {

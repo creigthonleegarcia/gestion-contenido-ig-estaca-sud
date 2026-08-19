@@ -366,9 +366,10 @@ onMounted(async () => {
 
 .cal-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   background: var(--border-tertiary);
   gap: 1px;
+  width: 100%;
 }
 
 .cal-header {
@@ -380,6 +381,10 @@ onMounted(async () => {
   letter-spacing: 0.05em;
   color: var(--text-muted);
   background: var(--gray-3);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cal-cell {
@@ -391,6 +396,10 @@ onMounted(async () => {
   gap: 4px;
   transition: background var(--transition-fast);
   position: relative;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .cal-cell:hover {
@@ -459,6 +468,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
+  width: 100%;
 }
 
 .cal-post-chip {
@@ -475,6 +486,9 @@ onMounted(async () => {
   font-size: 0.72rem;
   font-weight: 500;
   transition: all var(--transition-fast);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .cal-post-chip:hover {
@@ -499,13 +513,16 @@ onMounted(async () => {
   padding: 1px 4px;
   border-radius: 3px;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .chip-title {
   flex: 1;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
 }
 
 .chip-status-dot {
@@ -526,6 +543,9 @@ onMounted(async () => {
   color: var(--text-muted);
   background: rgba(255, 255, 255, 0.6);
   margin-top: auto;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .sugg-dot {
@@ -539,6 +559,8 @@ onMounted(async () => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
 /* ── Generate Section Banner ── */

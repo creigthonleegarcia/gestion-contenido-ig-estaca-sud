@@ -75,7 +75,8 @@ router.get('/', async (req, res) => {
               pillarColor = '#7c3aed';
             }
 
-            const firstLine = item.caption ? item.caption.split('\n')[0].replace(/[#@].*$/, '').trim() : '';
+            let firstLine = item.caption ? item.caption.split('\n')[0].replace(/[#@].*$/, '').trim() : '';
+            if (firstLine.length > 60) firstLine = firstLine.substring(0, 57) + '...';
             const imgUrl = (item.media_type === 'VIDEO' && item.thumbnail_url) ? item.thumbnail_url : (item.media_url || item.thumbnail_url);
 
             // Format date as YYYY-MM-DD HH:mm for standard matching

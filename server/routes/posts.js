@@ -29,9 +29,19 @@ const upload = multer({
 const router = Router();
 router.use(authenticateToken);
 
-// List posts with filters
-router.get('/', (req, res) => {
-  const { status, pillar_id, format, page = 1, limit = 20 } = req.query;
+function getMetaConfig() {
+  return {
+    token: process.env.META_ACCESS_TOKEN,
+    igId: process.env.IG_BUSINESS_ACCOUNT_ID,
+    isConnected: !!(process.env.META_ACCESS_TOKEN && process.env.IG_BUSINESS_ACCOUNT_ID)
+  };
+}
+
+// List posts: Merges Local DB (In Review, Drafts, Scheduled) + Live Instagram Feed Posts
+router.get('/', async (req, res) => {
+  const { status, pillar_id, format } = req.query;
+
+  // 1. Fetch local posts
   let query = `
     SELECT p.*, pl.name as pillar_name, pl.color as pillar_color, pl.icon as pillar_icon,
            u.name as creator_name
@@ -42,23 +52,133 @@ router.get('/', (req, res) => {
   `;
   const params = [];
 
-  if (status) { query += ' AND p.status = ?'; params.push(status); }
+  if (status && status !== 'live_ig') { query += ' AND p.status = ?'; params.push(status); }
   if (pillar_id) { query += ' AND p.pillar_id = ?'; params.push(pillar_id); }
   if (format) { query += ' AND p.format = ?'; params.push(format); }
 
-  query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?';
-  params.push(Number(limit), (Number(page) - 1) * Number(limit));
+  let localPosts = db.prepare(query).all(...params);
 
-  const posts = db.prepare(query).all(...params);
+  // 2. Fetch Live Instagram Feed posts from Meta API
+  let liveIgPosts = [];
+  const { token, igId, isConnected } = getMetaConfig();
 
-  const countQuery = query.replace(/SELECT .* FROM/, 'SELECT COUNT(*) as total FROM').replace(/ORDER BY.*$/, '');
-  const total = db.prepare(countQuery).get(...params.slice(0, -2));
+  if (isConnected && (!status || status === 'published' || status === 'live_ig')) {
+    try {
+      const igRes = await fetch(
+        `https://graph.instagram.com/v22.0/${igId}/media?fields=id,caption,timestamp,media_type,media_url,thumbnail_url,permalink,like_count,comments_count&limit=25&access_token=${token}`
+      );
+      const igData = await igRes.json();
+      if (igData?.data) {
+        liveIgPosts = igData.data.map(item => {
+          let fmt = 'static';
+          if (item.media_type === 'CAROUSEL_ALBUM') fmt = 'carousel';
+          else if (item.media_type === 'VIDEO') fmt = 'reel';
 
-  res.json({ posts, total: total?.total || posts.length, page: Number(page), limit: Number(limit) });
+          // Guess pillar from caption keywords
+          let pillarName = 'En Vivo en Instagram';
+          let pillarColor = '#007da5';
+          const capLower = (item.caption || '').toLowerCase();
+          if (capLower.includes('templo') || capLower.includes('fe') || capLower.includes('jesucrist') || capLower.includes('paz')) {
+            pillarName = 'Inspiración Doctrinal';
+            pillarColor = '#007da5';
+          } else if (capLower.includes('servicio') || capLower.includes('ayuda') || capLower.includes('manos')) {
+            pillarName = 'Servicio / SirveAhora';
+            pillarColor = '#318d43';
+          } else if (capLower.includes('conferencia') || capLower.includes('actividad') || capLower.includes('viernes')) {
+            pillarName = 'Información y Agenda';
+            pillarColor = '#d45311';
+          } else if (capLower.includes('jóvenes') || capLower.includes('mujeres') || capLower.includes('historia')) {
+            pillarName = 'Historias y Pioneros';
+            pillarColor = '#7c3aed';
+          }
+
+          const firstLine = item.caption ? item.caption.split('\n')[0].replace(/[#@].*$/, '').trim() : '';
+
+          return {
+            id: `ig-${item.id}`,
+            ig_id: item.id,
+            title: firstLine || 'Publicación en Feed de Instagram',
+            caption: item.caption || '',
+            hashtags: item.caption?.match(/#[a-zA-Z0-9_]+/g)?.join(' ') || '',
+            format: fmt,
+            media_paths: null,
+            media_url: item.media_url || item.thumbnail_url,
+            permalink: item.permalink,
+            scheduled_at: item.timestamp,
+            created_at: item.timestamp,
+            status: 'published',
+            is_live_ig: true,
+            like_count: item.like_count || 0,
+            comments_count: item.comments_count || 0,
+            pillar_name: pillarName,
+            pillar_color: pillarColor,
+            creator_name: '@estacalaserena'
+          };
+        });
+
+        // Filter live IG posts if format or pillar was requested
+        if (format) {
+          liveIgPosts = liveIgPosts.filter(p => p.format === format);
+        }
+      }
+    } catch (e) {
+      console.error('Error fetching live Instagram posts:', e.message);
+    }
+  }
+
+  // If user only wanted local status like draft/in_review, don't append IG posts
+  let allPosts = [];
+  if (status === 'draft' || status === 'in_review' || status === 'rejected' || status === 'scheduled') {
+    allPosts = [...localPosts];
+  } else if (status === 'live_ig') {
+    allPosts = [...liveIgPosts];
+  } else {
+    // Merge both
+    allPosts = [...localPosts, ...liveIgPosts];
+  }
+
+  // 3. Custom Ordering Requirement:
+  // 1st: "in_review" (En revisión)
+  // 2nd: "scheduled" / "approved" / "published" (Ya en IG o listos para salir)
+  // 3rd: "draft" / "rejected" (Borradores / Observados)
+  const statusPriority = {
+    in_review: 1,
+    scheduled: 2,
+    approved: 2,
+    published: 3,
+    rejected: 4,
+    draft: 5
+  };
+
+  allPosts.sort((a, b) => {
+    const pA = statusPriority[a.status] || 99;
+    const pB = statusPriority[b.status] || 99;
+    if (pA !== pB) return pA - pB;
+
+    // Inside same group, newer date first
+    const dateA = new Date(a.scheduled_at || a.created_at || 0).getTime();
+    const dateB = new Date(b.scheduled_at || b.created_at || 0).getTime();
+    return dateB - dateA;
+  });
+
+  res.json({
+    posts: allPosts,
+    total: allPosts.length,
+    counts: {
+      in_review: allPosts.filter(p => p.status === 'in_review').length,
+      published: allPosts.filter(p => p.status === 'published').length,
+      scheduled: allPosts.filter(p => p.status === 'scheduled').length,
+      drafts: allPosts.filter(p => p.status === 'draft').length
+    }
+  });
 });
 
 // Get single post
 router.get('/:id', (req, res) => {
+  if (String(req.params.id).startsWith('ig-')) {
+    return res.status(404).json({ error: 'Post de Instagram en vivo (no editable en base de datos local)' });
+  }
+
   const post = db.prepare(`
     SELECT p.*, pl.name as pillar_name, pl.color as pillar_color, pl.icon as pillar_icon,
            u.name as creator_name

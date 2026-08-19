@@ -172,8 +172,10 @@ function fillDemo(demoEmail) {
 /* ── Page Layout: Split Screen ── */
 .login-page {
   display: flex;
-  min-height: 100vh;
+  position: fixed;
+  inset: 0;
   background: #ffffff;
+  z-index: 200;
 }
 
 /* ── Hero Panel (Left) ── */
@@ -263,9 +265,8 @@ function fillDemo(demoEmail) {
   width: 480px;
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
+  flex-direction: column;
+  padding: 32px 48px;
   background: #ffffff;
   border-left: 1px solid var(--gray-5);
 }
@@ -273,6 +274,10 @@ function fillDemo(demoEmail) {
 .form-wrapper {
   width: 100%;
   max-width: 360px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   animation: formEnter 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
@@ -292,7 +297,7 @@ function fillDemo(demoEmail) {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .brand-symbol {
@@ -325,7 +330,7 @@ function fillDemo(demoEmail) {
 
 /* Welcome */
 .login-welcome {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .welcome-title {
@@ -496,7 +501,7 @@ function fillDemo(demoEmail) {
 
 /* Demo Section */
 .demo-section {
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
 .demo-divider {
@@ -597,7 +602,8 @@ function fillDemo(demoEmail) {
 
 /* Footer */
 .login-footer {
-  margin-top: 40px;
+  margin-top: auto;
+  padding-top: 24px;
   text-align: center;
 }
 

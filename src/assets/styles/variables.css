@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ── Unity Design System — Paleta Institucional ── */
+
+  /* Grays (from Unity) */
+  --gray-2: #f7f8f8;
+  --gray-3: #eff0f0;
+  --gray-5: #e0e2e2;
+  --gray-10: #d0d3d3;
+  --gray-15: #bdc0c0;
+  --gray-20: #a9adad;
+  --gray-25: #9da1a1;
+  --gray-30: #878a8c;
+  --gray-35: #676b6e;
+  --gray-40: #53575b;
+  --gray-60: #3a3d40;
+  --gray-90: #0d0f10;
+
+  /* Primary text */
+  --text-120: #212225;
+
+  /* Accent — Institutional Blue */
+  --blue-15: #49cce6;
+  --blue-20: #01b6d1;
+  --blue-25: #007da5;
+  --blue-30: #006184;
+  --blue-35: #005175;
+  --blue-40: #003057;
+
+  /* Red (emphasis/CTA) */
+  --red-emphasis: #DC3838;
+  --red-hover: #b00504;
+  --red-click: #950023;
+
+  /* Green (confirmation) */
+  --green-20: #6db344;
+  --green-30: #318d43;
+  --green-35: #206b3f;
+
+  /* Yellow/Orange (warning) */
+  --yellow-10: #ffb81c;
+  --yellow-20: #f68d2e;
+  --yellow-30: #d45311;
+
+  /* ── Semantic Tokens ── */
+
+  /* Backgrounds */
+  --bg-level1: #ffffff;
+  --bg-level2: #ffffff;
+  --bg-level3: var(--gray-2);
+  --bg-alt: var(--gray-3);
+  --bg-hover: var(--gray-3);
+  --bg-active: var(--gray-5);
+  --bg-input: #ffffff;
+
+  /* Text */
+  --text-primary: var(--text-120);
+  --text-secondary: var(--gray-40);
+  --text-tertiary: var(--gray-30);
+  --text-muted: var(--gray-25);
+  --text-inverted: #ffffff;
+
+  /* Accent */
+  --accent-primary: var(--blue-25);
+  --accent-primary-hover: var(--blue-40);
+  --accent-primary-click: var(--blue-30);
+  --accent-emphasis: var(--red-emphasis);
+  --accent-emphasis-hover: var(--red-hover);
+  --accent-success: var(--green-30);
+  --accent-warning: var(--yellow-30);
+  --accent-danger: var(--red-emphasis);
+
+  /* Pillar colors (kept from strategy) */
+  --pillar-inspiracion: var(--blue-25);
+  --pillar-informacion: var(--green-30);
+  --pillar-servicio: var(--yellow-20);
+  --pillar-historias: #8e44ad;
+
+  /* Borders */
+  --border-primary: var(--gray-30);
+  --border-secondary: var(--gray-15);
+  --border-tertiary: var(--gray-5);
+
+  /* Shadows — Unity elevation scale */
+  --shadow-raised: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  --shadow-detached: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  --shadow-overlaid: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  --shadow-popped: 0 16px 32px 0 rgba(0, 0, 0, 0.2);
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --header-height: 64px;
+
+  /* Border radius — Unity uses 2px (sober, institutional) */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-pill: 100px;
+
+  /* Spacing — Unity 4-8-16-24-32-48-64-96 */
+  --sp-4: 0.25rem;
+  --sp-8: 0.5rem;
+  --sp-16: 1rem;
+  --sp-24: 1.5rem;
+  --sp-32: 2rem;
+  --sp-48: 3rem;
+  --sp-64: 4rem;
+  --sp-96: 6rem;
+
+  /* Typography */
+  --font-sans: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Noto Serif', Georgia, serif;
+
+  /* Transitions — Emil's craft: fast + interruptible */
+  --transition-fast: 120ms cubic-bezier(0.23, 1, 0.32, 1);
+  --transition-normal: 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  --transition-slow: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}

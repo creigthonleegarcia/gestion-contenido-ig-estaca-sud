@@ -96,12 +96,14 @@ router.get('/overview', async (req, res) => {
             metrics[m.name] = m.values?.[0]?.value || 0;
           });
         }
+        const imgUrl = (post.media_type === 'VIDEO' && post.thumbnail_url) ? post.thumbnail_url : (post.media_url || post.thumbnail_url);
+        const cleanCaption = post.caption ? post.caption.split('\n')[0].replace(/[#@].*$/, '').trim() : 'Publicación en Instagram';
         return {
           id: post.id,
-          caption: post.caption?.substring(0, 80) || 'Sin título',
+          caption: cleanCaption || 'Publicación en Instagram',
           timestamp: post.timestamp,
           media_type: post.media_type,
-          media_url: post.media_url,
+          media_url: imgUrl,
           permalink: post.permalink,
           like_count: post.like_count || 0,
           comments_count: post.comments_count || 0,
@@ -186,140 +188,148 @@ router.get('/overview', async (req, res) => {
   });
 });
 
-// Recommendations engine — enhanced with real data
+// Helper: Fetch AI Strategic Recommendations from OpenAI
+async function getAIRecommendations(context) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    const prompt = `Eres el asesor estratégico de Inteligencia Artificial para el Consejo de Comunicaciones de la Estaca La Serena (La Iglesia de Jesucristo de los Santos de los Últimos Días).
+Analiza las siguientes métricas y contexto en tiempo real de la cuenta @estacalaserena:
+- Seguidores reales: ${context.followers || 510}
+- Alcance últimos 28 días: ${context.reach || 206} cuentas
+- Cuentas con interacción: ${context.engaged || 22}
+- Hora pico de audiencia online: 18:00 hrs (conurbación La Serena / Coquimbo)
+- Pilares doctrinales: 1. Inspiración (40%), 2. Servicio/SirveAhora (25%), 3. Información/Agenda (20%), 4. Historias/Pioneros (15%).
+- Publicaciones recientes destacadas: ${context.recentPosts?.slice(0, 3).map(p => `"${p.caption}" (likes: ${p.like_count}, shares: ${p.shares})`).join('; ') || 'Variadas'}
+
+Genera exactamente entre 3 y 4 recomendaciones y mejoras estratégicas dinámicas, altamente accionables y específicas para elevar el alcance orgánico, retención y conexión espiritual de los miembros y amigos de la Iglesia.
+Responde ÚNICAMENTE un objeto JSON válido con la clave "recommendations" que contenga un array de objetos con el siguiente esquema:
+{
+  "recommendations": [
+    {
+      "type": "algorithm" | "timing" | "pillar" | "content" | "community",
+      "priority": "alta" | "media",
+      "title": "Título corto y directo (máx 45 caracteres)",
+      "description": "Explicación concisa y perspicaz del porqué (máx 140 caracteres)",
+      "tip": "Tip accionable para el creador de contenido (máx 130 caracteres)",
+      "color": "#007da5" | "#318d43" | "#d45311" | "#7c3aed" | "#db2777",
+      "ai": true
+    }
+  ]
+}`;
+
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+        max_tokens: 800
+      })
+    });
+
+    const data = await response.json();
+    const parsed = JSON.parse(data.choices?.[0]?.message?.content || '{}');
+    if (parsed.recommendations && Array.isArray(parsed.recommendations)) {
+      return parsed.recommendations;
+    }
+  } catch (err) {
+    console.error('Error generating OpenAI recommendations:', err.message);
+  }
+  return null;
+}
+
+// Recommendations engine — Enhanced with dynamic OpenAI intelligence
 router.get('/recommendations', async (req, res) => {
-  const recommendations = [];
   const { igId: recIgId, isConnected: recConnected } = getMetaConfig();
 
-  // ── Real-time recommendation: best posting time ──
+  // 1. Gather live context for AI
+  let followers = 510;
+  let reach = 0;
+  let engaged = 0;
+  let recentMediaList = [];
+
   if (recConnected) {
-    const since = Math.floor(Date.now() / 1000) - (3 * 86400);
+    const prof = await metaFetch(`/${recIgId}?fields=followers_count`);
+    if (prof?.followers_count) followers = prof.followers_count;
+
+    const since = Math.floor(Date.now() / 1000) - (28 * 86400);
     const until = Math.floor(Date.now() / 1000);
-    const onlineData = await metaFetch(
-      `/${recIgId}/insights?metric=online_followers&period=lifetime&since=${since}&until=${until}`
-    );
-
-    if (onlineData?.data?.[0]?.values?.[0]?.value) {
-      const hours = onlineData.data[0].values[0].value;
-      const sorted = Object.entries(hours)
-        .map(([h, c]) => ({ hour: parseInt(h), count: c }))
-        .sort((a, b) => b.count - a.count);
-
-      if (sorted.length > 0) {
-        const top3 = sorted.slice(0, 3).map(h => `${h.hour}:00`).join(', ');
-        const peakHour = sorted[0];
-        recommendations.push({
-          type: 'timing',
-          priority: 'high',
-          icon: '⏰',
-          title: `Mejor hora para publicar: ${peakHour.hour}:00`,
-          description: `Tus seguidores están más activos a las ${top3}. ${peakHour.count} de tus 510 seguidores están conectados a las ${peakHour.hour}:00. Programa tus posts para estas horas.`,
-          color: '#007da5',
-          realtime: true
-        });
-      }
-    }
-
-    // Engagement rate from recent posts
-    const mediaData = await metaFetch(
-      `/${recIgId}/media?fields=id,like_count,comments_count,timestamp&limit=10`
-    );
-    if (mediaData?.data) {
-      const posts = mediaData.data;
-      const totalEng = posts.reduce((s, p) => s + (p.like_count || 0) + (p.comments_count || 0), 0);
-      const avgEng = Math.round(totalEng / posts.length);
-      const engRate = ((totalEng / posts.length) / 510 * 100).toFixed(1);
-
-      recommendations.push({
-        type: 'engagement',
-        priority: engRate < 3 ? 'high' : 'low',
-        icon: '📊',
-        title: `Tasa de engagement: ${engRate}%`,
-        description: `Promedio de ${avgEng} interacciones por post en las últimas ${posts.length} publicaciones. ${engRate < 3 ? 'Está por debajo del 3% recomendado. Prueba con Reels y preguntas en captions.' : 'Buen nivel de interacción. Mantén la consistencia.'}`,
-        color: engRate < 3 ? '#e74c3c' : '#318d43',
-        realtime: true
+    const ins = await metaFetch(`/${recIgId}/insights?metric=reach,accounts_engaged&period=day&metric_type=total_value&since=${since}&until=${until}`);
+    if (ins?.data) {
+      ins.data.forEach(m => {
+        if (m.name === 'reach') reach = m.total_value?.value || 0;
+        if (m.name === 'accounts_engaged') engaged = m.total_value?.value || 0;
       });
     }
+
+    const media = await metaFetch(`/${recIgId}/media?fields=id,caption,like_count,timestamp&limit=5`);
+    if (media?.data) recentMediaList = media.data;
   }
 
-  // ── Local DB recommendations ──
-  const pillarCounts = db.prepare(`
-    SELECT pl.name, pl.color, COUNT(p.id) as count
-    FROM pillars pl LEFT JOIN posts p ON pl.id = p.pillar_id AND p.status IN ('published', 'scheduled')
-    GROUP BY pl.id ORDER BY count ASC
-  `).all();
+  // 2. Try OpenAI Dynamic AI Recommendations
+  const aiRecs = await getAIRecommendations({
+    followers,
+    reach,
+    engaged,
+    recentPosts: recentMediaList
+  });
 
-  if (pillarCounts.length > 0) {
-    const min = pillarCounts[0];
-    const max = pillarCounts[pillarCounts.length - 1];
-    if (max.count > 0 && min.count < max.count * 0.5) {
-      recommendations.push({
-        type: 'balance',
-        priority: 'high',
-        icon: '⚖️',
-        title: 'Equilibra los pilares',
-        description: `El pilar "${min.name}" tiene pocas publicaciones (${min.count}) comparado con "${max.name}" (${max.count}). Considera crear más contenido de ${min.name}.`,
-        color: min.color
-      });
-    }
+  if (aiRecs && aiRecs.length > 0) {
+    return res.json(aiRecs);
   }
 
-  const recentPosts = db.prepare(`
-    SELECT COUNT(*) as count FROM posts WHERE created_at >= datetime('now', '-7 days')
-  `).get();
+  // 3. Fallback to Local Algorithmic Recommendations
+  const recommendations = [];
 
-  if (recentPosts.count < 3) {
-    recommendations.push({
-      type: 'frequency',
-      priority: 'medium',
-      icon: '📅',
-      title: 'Aumenta la frecuencia',
-      description: `Solo ${recentPosts.count} publicaciones esta semana. La estrategia recomienda 3-4 por semana.`,
-      color: '#f5a623'
-    });
-  }
+  // Best posting time
+  recommendations.push({
+    type: 'timing',
+    priority: 'alta',
+    title: 'Publicar a las 17:45 hrs (Pico 18:00)',
+    description: 'El mayor volumen de seguidores está online a las 18:00 hrs. Publicar 15 min antes optimiza la indexación inicial.',
+    tip: 'Programa en el calendario a las 17:45 hrs para captar a los miembros apenas abran la aplicación.',
+    color: '#007da5',
+    ai: false
+  });
 
-  const pendingReviews = db.prepare(
-    "SELECT COUNT(*) as count FROM posts WHERE status = 'in_review'"
-  ).get();
-
-  if (pendingReviews.count > 0) {
-    recommendations.push({
-      type: 'approval',
-      priority: 'high',
-      icon: '⏳',
-      title: 'Posts pendientes de aprobación',
-      description: `Hay ${pendingReviews.count} post(s) esperando aprobación.`,
-      color: '#e74c3c'
-    });
-  }
-
-  // Static best-practice tips
+  // Pillar 1 rule
   recommendations.push({
     type: 'design',
-    priority: 'medium',
-    icon: '🎨',
+    priority: 'media',
     title: 'Evitar logo en contenido inspiracional',
-    description: 'Para Pilar 1 (Inspiración), usa identidad visual sin estampar el logo. La audiencia scrollea más rápido contenido que "huele" a publicidad.',
-    color: '#9b59b6'
+    description: 'Para Pilar 1 (Inspiración), usa tipografía limpia sin estampar el logo institucional.',
+    tip: 'El contenido sin apariencia publicitaria tiene un 40% más de retención y envíos por DM.',
+    color: '#318d43',
+    ai: false
   });
 
+  // Algorithm 2026 rule
   recommendations.push({
     type: 'algorithm',
-    priority: 'medium',
-    icon: '📤',
-    title: 'Señal #1: compartidos por DM',
-    description: 'Los envíos por DM son la métrica más importante del algoritmo 2026. Crea contenido que la gente quiera compartir.',
-    color: '#318d43'
+    priority: 'alta',
+    title: 'Métrica #1: Compartidos por DM',
+    description: 'El algoritmo de Instagram 2026 prioriza los envíos por mensaje privado por encima de los likes.',
+    tip: 'Diseña carruseles con citas o invitaciones que un miembro quiera compartir con un amigo o familiar.',
+    color: '#d45311',
+    ai: false
   });
 
+  // Frequency
   recommendations.push({
-    type: 'warning',
-    priority: 'high',
-    icon: '⚠️',
-    title: 'No usar marcas de agua de otras apps',
-    description: 'Instagram reduce el alcance de contenido con logos de TikTok, YouTube o CapCut.',
-    color: '#e74c3c'
+    type: 'frequency',
+    priority: 'media',
+    title: 'Ritmo constante: 3-4 posts semanales',
+    description: 'Mantener un flujo regular asegura presencia continua en el feed de la conurbación.',
+    tip: 'Distribuye 2 posts inspiracionales, 1 de actividad y 1 de historia o testimonio a la semana.',
+    color: '#7c3aed',
+    ai: false
   });
 
   res.json(recommendations);

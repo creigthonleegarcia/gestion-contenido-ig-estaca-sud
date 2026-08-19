@@ -75,11 +75,37 @@
       </div>
     </header>
 
-    <!-- Key Metrics Grid -->
+    <!-- Key Metrics Grid with Info Tooltips & Tips -->
     <section class="metrics-grid" v-if="overview">
       <div class="metric-card" v-for="m in metrics" :key="m.label">
         <div class="metric-header">
-          <span class="metric-label">{{ m.label }}</span>
+          <div class="metric-label-group">
+            <span class="metric-label">{{ m.label }}</span>
+            <div class="info-popover-wrap">
+              <button class="info-btn" :title="`¿Por qué importa: ${m.label}?`" aria-label="Información">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+              </button>
+              <div class="info-popover">
+                <div class="popover-title">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                  <span>¿Por qué importa?</span>
+                </div>
+                <p class="popover-text">{{ m.why }}</p>
+                <div class="popover-tip">
+                  <span class="tip-badge">Tip Clave</span>
+                  <p class="tip-text">{{ m.tip }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="metric-icon" :style="{ background: m.bg }">
             <component :is="m.iconSvg" />
           </div>
@@ -104,8 +130,34 @@
             </svg>
           </div>
           <div>
-            <h3 class="card-title">Ventana Óptima de Publicación</h3>
-            <p class="card-subtitle">Seguidores activos por hora en La Serena / Coquimbo</p>
+            <div class="title-with-info">
+              <h3 class="card-title">Ventana Óptima de Publicación</h3>
+              <div class="info-popover-wrap">
+                <button class="info-btn" title="Información de ventana horaria">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                </button>
+                <div class="info-popover">
+                  <div class="popover-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span>¿Por qué importa la hora pico?</span>
+                  </div>
+                  <p class="popover-text">El 80% de la distribución orgánica de Instagram se define en los primeros 45 minutos. Publicar cuando tus miembros están conectados maximiza la aceleración inicial del algoritmo.</p>
+                  <div class="popover-tip">
+                    <span class="tip-badge">Tip Clave</span>
+                    <p class="tip-text">Programa tus publicaciones a las <strong>17:45 hrs</strong> (15 min antes de las 18:00). Así el post ya estará procesado y en el feed cuando la audiencia abra la aplicación.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="card-subtitle">Seguidores de @estacalaserena activos por hora en la conurbación</p>
           </div>
         </div>
         <div class="peak-badge">
@@ -134,10 +186,37 @@
 
     <!-- Charts Row -->
     <section class="charts-grid" v-if="overview">
+      <!-- Reach & Audience Evolution Chart -->
       <div class="card chart-card">
         <div class="card-header-bar">
           <div>
-            <h3 class="card-title">Evolución de Alcance y Audiencia</h3>
+            <div class="title-with-info">
+              <h3 class="card-title">Evolución de Alcance y Audiencia</h3>
+              <div class="info-popover-wrap">
+                <button class="info-btn" title="Información de evolución">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                </button>
+                <div class="info-popover">
+                  <div class="popover-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span>¿Por qué importa el alcance?</span>
+                  </div>
+                  <p class="popover-text">Te muestra la curva de visibilidad y el crecimiento orgánico tras cada evento o publicación estratégica de la Estaca.</p>
+                  <div class="popover-tip">
+                    <span class="tip-badge">Tip Clave</span>
+                    <p class="tip-text">Cuando veas un pico elevado (como viajes al templo o conferencias), replica la misma estructura audiovisual en la siguiente actividad distrital.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <p class="card-subtitle">Rendimiento orgánico histórico</p>
           </div>
           <span class="chart-badge">Últimos 30 días</span>
@@ -147,10 +226,37 @@
         </div>
       </div>
 
+      <!-- Pillar Distribution Chart -->
       <div class="card chart-card">
         <div class="card-header-bar">
           <div>
-            <h3 class="card-title">Distribución por Pilar</h3>
+            <div class="title-with-info">
+              <h3 class="card-title">Distribución por Pilar Doctrinal</h3>
+              <div class="info-popover-wrap">
+                <button class="info-btn" title="Información de pilares">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                </button>
+                <div class="info-popover">
+                  <div class="popover-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span>¿Por qué importa el balance de pilares?</span>
+                  </div>
+                  <p class="popover-text">Evita la 'ceguera publicitaria'. Si una cuenta solo publica afiches o avisos, los miembros se desenganchan. El contenido inspiracional nutre espiritualmente.</p>
+                  <div class="popover-tip">
+                    <span class="tip-badge">Tip Clave</span>
+                    <p class="tip-text">Mantén el <strong>40% en Inspiración</strong> sin logos grandes. Es el tipo de contenido con mayor probabilidad de ser compartido por WhatsApp o DM.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <p class="card-subtitle">Balance estratégico de contenido</p>
           </div>
         </div>
@@ -166,7 +272,33 @@
       <div class="card recommendations-card">
         <div class="card-header-bar">
           <div>
-            <h3 class="card-title">Recomendaciones del Algoritmo</h3>
+            <div class="title-with-info">
+              <h3 class="card-title">Recomendaciones del Algoritmo</h3>
+              <div class="info-popover-wrap">
+                <button class="info-btn" title="Información de recomendaciones">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                </button>
+                <div class="info-popover">
+                  <div class="popover-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span>¿Por qué importa el motor de reglas?</span>
+                  </div>
+                  <p class="popover-text">Detecta debilidades en tiempo real: saturación de pilares, horarios desalineados o bajas tasas de interacción antes de que afecten la cuenta.</p>
+                  <div class="popover-tip">
+                    <span class="tip-badge">Tip Clave</span>
+                    <p class="tip-text">Atiende primero las alertas de prioridad <strong>Alta</strong> en rojo para mantener el estado de optimización editorial.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
             <p class="card-subtitle">Acciones estratégicas sugeridas para el comité</p>
           </div>
           <span class="recs-count">{{ recommendations.length }} activas</span>
@@ -177,16 +309,26 @@
             v-for="rec in recommendations"
             :key="rec.title"
             class="rec-item"
-            :style="{ borderLeftColor: rec.color }"
+            :style="{ borderLeftColor: rec.color || '#007da5' }"
           >
             <div class="rec-top">
               <div class="rec-title-wrap">
                 <h4 class="rec-title">{{ rec.title }}</h4>
-                <span v-if="rec.realtime" class="live-pill">En vivo</span>
+                <span v-if="rec.ai" class="ai-spark-pill">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                  </svg>
+                  IA OpenAI
+                </span>
+                <span v-else-if="rec.realtime" class="live-pill">En vivo</span>
               </div>
-              <span class="badge" :class="`badge-${rec.priority}`">{{ rec.priority }}</span>
+              <span class="badge" :class="`badge-${String(rec.priority).toLowerCase()}`">{{ rec.priority }}</span>
             </div>
             <p class="rec-desc">{{ rec.description }}</p>
+            <div v-if="rec.tip" class="rec-tip-box">
+              <span class="tip-mini-tag">Tip:</span>
+              <span class="tip-mini-text">{{ rec.tip }}</span>
+            </div>
           </article>
 
           <div v-if="recommendations.length === 0" class="empty-state">
@@ -199,8 +341,34 @@
       <div class="card top-posts-card">
         <div class="card-header-bar">
           <div>
-            <h3 class="card-title">Publicaciones con Mayor Impacto</h3>
-            <p class="card-subtitle">Contenido de @estacalaserena con mejor interacción</p>
+            <div class="title-with-info">
+              <h3 class="card-title">Publicaciones con Mayor Impacto</h3>
+              <div class="info-popover-wrap">
+                <button class="info-btn" title="Información del ranking">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                </button>
+                <div class="info-popover">
+                  <div class="popover-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span>¿Por qué importa este ranking?</span>
+                  </div>
+                  <p class="popover-text">Identifica los posts que lograron conectar con la audiencia en base a likes, guardados y compartidos directos.</p>
+                  <div class="popover-tip">
+                    <span class="tip-badge">Tip Clave</span>
+                    <p class="tip-text">El icono de la flecha representa <strong>Compartidos por DM</strong>. Es la métrica dorada de 2026: crea mensajes que un miembro desee enviar a su familia o amigos.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="card-subtitle">Contenido de @estacalaserena con mejor interacción en feed</p>
           </div>
         </div>
 
@@ -217,10 +385,11 @@
             
             <div class="post-media-wrap">
               <img
-                v-if="post.media_url"
+                v-if="post.media_url && !failedThumbs.has(post.id)"
                 :src="post.media_url"
                 class="post-thumb"
                 :alt="post.caption"
+                @error="onThumbError(post.id)"
                 loading="lazy"
               />
               <div v-else class="post-thumb-fallback">
@@ -247,7 +416,7 @@
                   </svg>
                   {{ post.like_count || 0 }}
                 </span>
-                <span class="p-stat" title="Compartidos (Señal #1)">
+                <span class="p-stat" title="Compartidos por DM (Señal #1 de distribución)">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
                   </svg>
@@ -279,7 +448,33 @@
     <!-- Pipeline Workflow Bar -->
     <section class="pipeline-bar card" v-if="overview?.postStats">
       <div class="pipeline-title-group">
-        <span class="pipeline-legend">Flujo Editorial</span>
+        <div class="title-with-info">
+          <span class="pipeline-legend">Flujo Editorial</span>
+          <div class="info-popover-wrap">
+            <button class="info-btn" title="Información del pipeline">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+            </button>
+            <div class="info-popover">
+              <div class="popover-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="12" y1="16" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                <span>¿Por qué importa el pipeline?</span>
+              </div>
+              <p class="popover-text">Garantiza que ningún post se publique sin revisión doctrinal del comité ni pase por alto las normas de la Iglesia.</p>
+              <div class="popover-tip">
+                <span class="tip-badge">Tip Clave</span>
+                <p class="tip-text">Trabaja con una semana de anticipación: ten siempre al menos <strong>2 publicaciones aprobadas</strong> listas para salir.</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <span class="pipeline-total">{{ overview.postStats.total_posts || 0 }} publicaciones en gestión</span>
       </div>
 
@@ -308,6 +503,7 @@ const reachChartRef = ref(null)
 const pillarChartRef = ref(null)
 const metaConnected = ref(false)
 const isRefreshing = ref(false)
+const failedThumbs = ref(new Set())
 
 let reachChartInstance = null
 let pillarChartInstance = null
@@ -315,6 +511,10 @@ let pillarChartInstance = null
 const overview = computed(() => insightsStore.overview)
 const recommendations = computed(() => insightsStore.recommendations)
 const profile = computed(() => overview.value?.profile)
+
+function onThumbError(id) {
+  failedThumbs.value.add(id)
+}
 
 // SVG Icons components
 const IconUsers = () => h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 2 }, [
@@ -350,28 +550,36 @@ const metrics = computed(() => {
       value: prof.followers_count || latest.followers || 0,
       bg: '#007da5',
       iconSvg: IconUsers,
-      subtext: `@${prof.username || 'estacalaserena'}`
+      subtext: `@${prof.username || 'estacalaserena'}`,
+      why: 'Representa la comunidad fiel de miembros y familias de la Estaca que reciben directamente las noticias y devocionales.',
+      tip: 'Anuncia la cuenta en las reuniones de obispado y sacerdocio para que los líderes motiven a los miembros a seguirla orgánicamente.'
     },
     {
       label: 'Alcance Mensual (28d)',
       value: latest.reach || 0,
       bg: '#318d43',
       iconSvg: IconEye,
-      subtext: 'Cuentas únicas alcanzadas'
+      subtext: 'Cuentas únicas alcanzadas',
+      why: 'Mide cuántas personas distintas (incluyendo amigos no miembros) vieron al menos una publicación de la Estaca.',
+      tip: 'Los testimonios de jóvenes en Reels y carruseles consiguen hasta un 65% de visualizaciones fuera de los seguidores.'
     },
     {
       label: 'Cuentas con Interacción',
       value: latest.accounts_engaged || 0,
       bg: '#d45311',
       iconSvg: IconHeart,
-      subtext: 'Likes, comentarios y envíos'
+      subtext: 'Likes, comentarios y envíos',
+      why: 'Indica el impacto real: personas que no solo miraron, sino que respondieron, guardaron o compartieron el mensaje.',
+      tip: 'Haz preguntas al final del texto (ej: "¿Qué es lo que más recuerdas de esta conferencia?") para elevar los comentarios en las primeras 2 horas.'
     },
     {
       label: 'Publicaciones en Feed',
       value: prof.media_count || overview.value.postStats?.total_posts || 0,
       bg: '#006184',
       iconSvg: IconGrid,
-      subtext: 'Contenido total publicado'
+      subtext: 'Contenido total publicado',
+      why: 'El historial de testimonios, actividades y registros edificantes acumulados por la Estaca.',
+      tip: 'Mantén una constancia de 3 a 4 publicaciones semanales para que el algoritmo nunca penalice la cuenta por inactividad.'
     },
   ]
 })
@@ -448,41 +656,53 @@ function renderCharts() {
           },
           tooltip: {
             backgroundColor: '#212225',
-            padding: 10,
-            cornerRadius: 4
+            titleFont: { family: 'Roboto', size: 12 },
+            bodyFont: { family: 'Roboto', size: 11 },
+            cornerRadius: 4,
+            padding: 8
           }
         },
         scales: {
-          x: { ticks: { color: '#878a8c', font: { size: 10 } }, grid: { color: '#f0f1f1' } },
-          y: { ticks: { color: '#878a8c', font: { size: 10 } }, grid: { color: '#f0f1f1' } }
+          x: {
+            grid: { display: false },
+            ticks: { color: '#70757a', font: { size: 10 } }
+          },
+          y: {
+            grid: { color: '#e8eaed' },
+            ticks: { color: '#70757a', font: { size: 10 } }
+          }
         }
       }
     })
   }
 
-  // 2. Pillar Chart
+  // 2. Pillar Distribution Chart
   if (pillarChartRef.value && overview.value?.pillarDistribution?.length) {
-    const data = overview.value.pillarDistribution
+    const pillars = overview.value.pillarDistribution
     pillarChartInstance = new Chart(pillarChartRef.value, {
       type: 'doughnut',
       data: {
-        labels: data.map(d => d.name),
+        labels: pillars.map(p => p.name),
         datasets: [{
-          data: data.map(d => d.count || 1),
-          backgroundColor: data.map(d => d.color || '#007da5'),
+          data: pillars.map(p => p.count),
+          backgroundColor: pillars.map(p => p.color || '#007da5'),
           borderWidth: 2,
-          borderColor: '#ffffff',
-          hoverOffset: 6
+          borderColor: '#ffffff'
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '70%',
+        cutout: '68%',
         plugins: {
           legend: {
             position: 'bottom',
-            labels: { color: '#53575b', font: { family: 'Roboto', size: 11 }, padding: 12, usePointStyle: true }
+            labels: {
+              boxWidth: 10,
+              padding: 10,
+              color: '#53575b',
+              font: { family: 'Roboto', size: 11 }
+            }
           }
         }
       }
@@ -492,17 +712,14 @@ function renderCharts() {
 
 async function refreshData() {
   isRefreshing.value = true
-  try {
-    await Promise.all([
-      insightsStore.fetchOverview(),
-      insightsStore.fetchRecommendations()
-    ])
-    metaConnected.value = overview.value?.isConnected || false
-    await nextTick()
-    renderCharts()
-  } finally {
-    isRefreshing.value = false
-  }
+  await Promise.all([
+    insightsStore.fetchOverview(),
+    insightsStore.fetchRecommendations()
+  ])
+  metaConnected.value = overview.value?.isConnected || false
+  await nextTick()
+  renderCharts()
+  isRefreshing.value = false
 }
 
 onMounted(async () => {
@@ -519,16 +736,18 @@ onMounted(async () => {
   margin: 0 auto;
 }
 
-/* ── Hero Banner ── */
+/* ── Hero Profile Banner ── */
 .dash-hero {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 28px;
+  padding: 20px 24px;
   background: var(--bg-level1);
   border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-raised);
+  flex-wrap: wrap;
+  gap: var(--sp-16);
 }
 
 .profile-meta {
@@ -539,29 +758,31 @@ onMounted(async () => {
 
 .avatar-container {
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
 .profile-avatar {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-pill);
+  border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--accent-primary);
+  border: 2px solid #ffffff;
   box-shadow: var(--shadow-raised);
 }
 
 .avatar-fallback {
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-pill);
+  border-radius: 50%;
   background: var(--gray-3);
+  color: var(--accent-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
+  border: 2px solid #ffffff;
 }
 
 .live-dot {
@@ -570,9 +791,15 @@ onMounted(async () => {
   right: 2px;
   width: 12px;
   height: 12px;
+  border-radius: 50%;
   background: var(--accent-success);
   border: 2px solid #ffffff;
-  border-radius: 50%;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .title-row {
@@ -583,7 +810,7 @@ onMounted(async () => {
 }
 
 .profile-title {
-  font: 700 1.5rem/1.2 var(--font-serif);
+  font: 700 1.25rem/1.2 var(--font-serif);
   color: var(--text-primary);
   margin: 0;
 }
@@ -592,28 +819,27 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 3px 10px;
-  background: #f0f9fc;
-  border: 1px solid rgba(0, 125, 165, 0.2);
+  padding: 3px 8px;
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
   border-radius: var(--radius-pill);
-  color: var(--accent-primary);
-  font-size: 0.8125rem;
-  font-weight: 500;
+  color: #db2777;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-decoration: none;
   transition: all var(--transition-fast);
 }
 
 .ig-handle-badge:hover {
-  background: var(--accent-primary);
-  color: #ffffff;
+  background: #fce7f3;
+  transform: translateY(-1px);
 }
 
 .profile-bio {
-  font-size: 0.84rem;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
-  margin: 4px 0 0 0;
   max-width: 600px;
-  line-height: 1.4;
+  margin: 0;
 }
 
 .hero-actions {
@@ -625,18 +851,20 @@ onMounted(async () => {
 .meta-status-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 6px 12px;
-  border-radius: var(--radius-pill);
-  background: #fff3e0;
-  color: var(--accent-warning);
+  background: var(--gray-2);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-secondary);
 }
 
 .meta-status-pill.connected {
   background: #e8f5e9;
-  color: var(--accent-success);
+  color: #2e7d32;
+  border-color: #c8e6c9;
 }
 
 .pulse-indicator {
@@ -644,38 +872,27 @@ onMounted(async () => {
   height: 7px;
   border-radius: 50%;
   background: currentColor;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.3); }
-  100% { opacity: 1; transform: scale(1); }
 }
 
 .btn-sync {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
+  padding: 7px 14px;
   background: var(--bg-level1);
   border: 1px solid var(--border-secondary);
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
   font-size: 0.8125rem;
   font-weight: 500;
+  color: var(--text-primary);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .btn-sync:hover:not(:disabled) {
+  background: var(--gray-2);
   border-color: var(--accent-primary);
   color: var(--accent-primary);
-  background: #f7fbfd;
-}
-
-.btn-sync:active {
-  transform: scale(0.97);
 }
 
 .spin-anim {
@@ -683,15 +900,120 @@ onMounted(async () => {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Metric Cards ── */
+/* ── Interactive Info Popover Component ── */
+.title-with-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.metric-label-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-popover-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.info-btn {
+  background: transparent;
+  border: none;
+  padding: 2px;
+  border-radius: 50%;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.info-btn:hover {
+  color: var(--accent-primary);
+  background: var(--gray-2);
+  transform: scale(1.1);
+}
+
+.info-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 270px;
+  background: #ffffff;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-detached), 0 8px 24px rgba(0,0,0,0.12);
+  padding: 12px 14px;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.info-popover-wrap:hover .info-popover,
+.info-popover-wrap:focus-within .info-popover {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.popover-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  margin-bottom: 6px;
+}
+
+.popover-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0 0 8px 0;
+}
+
+.popover-tip {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+}
+
+.tip-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #15803d;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+
+.tip-text {
+  font-size: 0.72rem;
+  color: #166534;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* ── Key Metrics Grid ── */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--sp-16);
 }
 
 .metric-card {
-  padding: 20px;
+  padding: 18px 20px;
   background: var(--bg-level1);
   border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-md);
@@ -699,7 +1021,8 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  gap: 12px;
+  transition: all var(--transition-fast);
 }
 
 .metric-card:hover {
@@ -710,16 +1033,13 @@ onMounted(async () => {
 .metric-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--sp-12);
+  align-items: flex-start;
 }
 
 .metric-label {
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: var(--text-secondary);
 }
 
 .metric-icon {
@@ -730,18 +1050,17 @@ onMounted(async () => {
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  flex-shrink: 0;
 }
 
 .metric-value {
-  font: 700 1.85rem/1.1 var(--font-serif);
+  font: 700 1.6rem/1.1 var(--font-serif);
   color: var(--text-primary);
+  margin-bottom: 3px;
 }
 
 .metric-trend {
-  font-size: 0.75rem;
-  color: var(--text-tertiary);
-  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
 }
 
 /* ── Peak Hours Card ── */
@@ -757,40 +1076,55 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--sp-16);
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: var(--sp-12);
 }
 
 .peak-title-wrap {
   display: flex;
   align-items: center;
-  gap: var(--sp-12);
+  gap: 12px;
 }
 
 .peak-icon {
-  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: #eef6f9;
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-title {
+  font: 700 1rem/1.2 var(--font-serif);
+  color: var(--text-primary);
+  margin: 0;
 }
 
 .card-subtitle {
   font-size: 0.78rem;
-  color: var(--text-tertiary);
+  color: var(--text-muted);
   margin: 2px 0 0 0;
 }
 
 .peak-badge {
-  font-size: 0.8125rem;
   padding: 5px 12px;
-  background: #e0f4f8;
   border-radius: var(--radius-pill);
+  background: #eef6f9;
+  border: 1px solid #c7e3ed;
+  font-size: 0.78rem;
   color: var(--accent-primary);
 }
 
 .hours-timeline {
   display: grid;
   grid-template-columns: repeat(24, 1fr);
-  gap: 4px;
+  gap: 3px;
   align-items: flex-end;
-  height: 90px;
-  padding-top: 10px;
+  height: 85px;
 }
 
 .hour-col {
@@ -798,15 +1132,21 @@ onMounted(async () => {
   flex-direction: column;
   align-items: center;
   height: 100%;
+  justify-content: flex-end;
   cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.hour-col:hover {
+  transform: translateY(-2px);
 }
 
 .hour-bar-track {
-  flex: 1;
   width: 100%;
-  max-width: 12px;
-  background: var(--gray-3);
-  border-radius: 2px;
+  max-width: 18px;
+  height: 60px;
+  background: var(--gray-2);
+  border-radius: 2px 2px 0 0;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -814,25 +1154,26 @@ onMounted(async () => {
 
 .hour-bar-fill {
   width: 100%;
-  background: var(--accent-primary);
-  opacity: 0.5;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-.hour-col:hover .hour-bar-fill {
-  opacity: 0.9;
+  background: #007da5;
+  opacity: 0.65;
+  border-radius: 2px 2px 0 0;
+  transition: height 300ms ease;
 }
 
 .hour-col.is-peak .hour-bar-fill {
-  background: var(--accent-danger);
+  background: #318d43;
   opacity: 1;
 }
 
 .hour-label {
-  font-size: 0.65rem;
+  font-size: 0.625rem;
   color: var(--text-muted);
   margin-top: 4px;
+}
+
+.hour-col.is-peak .hour-label {
+  font-weight: 700;
+  color: #318d43;
 }
 
 /* ── Charts Grid ── */
@@ -853,25 +1194,26 @@ onMounted(async () => {
 .card-header-bar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: var(--sp-16);
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .chart-badge {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
   background: var(--gray-2);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: var(--radius-pill);
 }
 
 .canvas-wrapper {
   position: relative;
-  height: 230px;
+  height: 240px;
+  width: 100%;
 }
 
 .doughnut-wrap {
-  height: 230px;
+  height: 240px;
 }
 
 /* ── Bottom Grid ── */
@@ -881,107 +1223,137 @@ onMounted(async () => {
   gap: var(--sp-16);
 }
 
-.recommendations-card, .top-posts-card {
+.recommendations-card,
+.top-posts-card {
   padding: 20px 24px;
   background: var(--bg-level1);
   border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-raised);
+  display: flex;
+  flex-direction: column;
 }
 
 .recs-count {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  background: #eef6f9;
   color: var(--accent-primary);
-  font-weight: 600;
-  background: #e0f4f8;
-  padding: 3px 8px;
   border-radius: var(--radius-pill);
+  font-weight: 600;
 }
 
 .recommendations-list {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-12);
-  max-height: 440px;
-  overflow-y: auto;
-  padding-right: 4px;
+  gap: 10px;
+  flex: 1;
 }
 
 .rec-item {
-  padding: 14px 16px;
-  border-left: 3px solid;
+  padding: 12px 14px;
   background: var(--gray-2);
+  border-left: 3px solid;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   transition: all var(--transition-fast);
 }
 
 .rec-item:hover {
-  background: #f2f7fa;
+  background: #eef6f9;
   transform: translateX(2px);
 }
 
 .rec-top {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: var(--sp-8);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
-.rec-icon { font-size: 1.1rem; }
-
 .rec-title-wrap {
-  flex: 1;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .rec-title {
-  font-size: 0.84rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  margin: 0;
   color: var(--text-primary);
+  margin: 0;
 }
 
 .live-pill {
-  font-size: 0.65rem;
-  text-transform: uppercase;
+  font-size: 0.625rem;
+  padding: 1px 5px;
+  border-radius: 3px;
   background: #e8f5e9;
-  color: var(--accent-success);
-  padding: 2px 6px;
-  border-radius: var(--radius-pill);
+  color: #2e7d32;
   font-weight: 700;
 }
 
-.rec-desc {
-  font-size: 0.8125rem;
-  color: var(--text-secondary);
-  line-height: 1.45;
-  margin: 0;
+.ai-spark-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, #ede9fe 0%, #fae8ff 100%);
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(124, 58, 237, 0.1);
 }
 
-/* ── Top Posts List ── */
+.rec-desc {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0 0 6px 0;
+}
+
+.rec-tip-box {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 5px 8px;
+  background: #ffffff;
+  border: 1px solid var(--border-tertiary);
+  border-radius: var(--radius-sm);
+}
+
+.tip-mini-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #15803d;
+  text-transform: uppercase;
+}
+
+.tip-mini-text {
+  font-size: 0.72rem;
+  color: #166534;
+  line-height: 1.3;
+}
+
+/* ── Top Posts Ranking ── */
 .top-posts-list {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-8);
-  max-height: 440px;
-  overflow-y: auto;
-  padding-right: 4px;
+  gap: 8px;
 }
 
 .top-post-card {
   display: flex;
   align-items: center;
-  gap: var(--sp-12);
-  padding: 10px 12px;
+  gap: 12px;
+  padding: 8px 12px;
   background: var(--gray-2);
-  border: 1px solid transparent;
+  border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-sm);
   text-decoration: none;
   color: inherit;
-  transition: all 160ms ease;
-  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .top-post-card:hover {
@@ -992,10 +1364,9 @@ onMounted(async () => {
 }
 
 .rank-badge {
-  font: 700 0.8125rem/1 var(--font-serif);
+  font: 700 0.85rem var(--font-serif);
   color: var(--text-muted);
-  width: 24px;
-  text-align: center;
+  min-width: 22px;
 }
 
 .post-media-wrap {
@@ -1019,7 +1390,8 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  color: var(--text-muted);
+  opacity: 0.5;
 }
 
 .post-details {
@@ -1028,31 +1400,32 @@ onMounted(async () => {
 }
 
 .post-caption {
-  font-size: 0.8125rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--text-primary);
-  margin: 0 0 4px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin: 0 0 4px 0;
 }
 
 .post-metrics-row {
   display: flex;
-  gap: 12px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
 }
 
 .p-stat {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  font-size: 0.72rem;
-  color: var(--text-muted);
+  gap: 3px;
 }
 
 .post-arrow {
-  color: var(--gray-15);
-  transition: transform var(--transition-fast), color var(--transition-fast);
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
 }
 
 .top-post-card:hover .post-arrow {
@@ -1062,24 +1435,26 @@ onMounted(async () => {
 
 /* ── Pipeline Bar ── */
 .pipeline-bar {
-  padding: 16px 24px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-16);
   background: var(--bg-level1);
   border: 1px solid var(--border-tertiary);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-raised);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--sp-24);
 }
 
 .pipeline-title-group {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .pipeline-legend {
-  font: 700 0.875rem/1.2 var(--font-serif);
+  font: 700 0.95rem/1.2 var(--font-serif);
   color: var(--text-primary);
 }
 
@@ -1090,9 +1465,9 @@ onMounted(async () => {
 
 .pipeline-steps {
   display: flex;
-  gap: var(--sp-24);
-  flex: 1;
-  justify-content: flex-end;
+  align-items: center;
+  gap: var(--sp-16);
+  flex-wrap: wrap;
 }
 
 .pipeline-step {
@@ -1113,48 +1488,27 @@ onMounted(async () => {
 }
 
 .step-num {
-  font: 700 1.1rem/1.1 var(--font-serif);
+  font-size: 0.9rem;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
 .step-name {
   font-size: 0.7rem;
   color: var(--text-muted);
-  text-transform: capitalize;
 }
 
-/* Badges */
-.badge-high { background: #fde8e8; color: var(--accent-danger); }
-.badge-medium { background: #fff3e0; color: var(--accent-warning); }
-.badge-low { background: #e0f4f8; color: var(--accent-primary); }
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+}
 
-.badge-draft { background: var(--gray-20); }
-.badge-in_review { background: var(--accent-warning); }
-.badge-scheduled { background: var(--accent-primary); }
-.badge-published { background: var(--accent-success); }
-.badge-rejected { background: var(--accent-danger); }
-
-/* Responsive adjustments */
-@media (max-width: 1080px) {
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+@media (max-width: 900px) {
   .charts-grid,
   .bottom-grid {
     grid-template-columns: 1fr;
-  }
-  .dash-hero {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--sp-16);
-  }
-  .pipeline-bar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .pipeline-steps {
-    width: 100%;
-    justify-content: space-between;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useAuthStore } from './auth'
 
-const API = 'http://localhost:3001/api'
+const API = '/api'
 
 export const usePostsStore = defineStore('posts', {
   state: () => ({

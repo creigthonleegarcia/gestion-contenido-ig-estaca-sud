@@ -34,3 +34,4 @@ uploads/*
 
 # Environment
 .env
+server/database.sqlite

@@ -133,7 +133,7 @@ const pendingCount = ref(0)
 async function fetchPendingCount() {
   if (!auth.isAuthenticated) return
   try {
-    const res = await fetch('http://localhost:3001/api/approval/queue', {
+    const res = await fetch('/api/approval/queue', {
       headers: auth.getHeaders()
     })
     const data = await res.json()

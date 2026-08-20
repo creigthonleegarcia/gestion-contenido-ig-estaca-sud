@@ -58,25 +58,33 @@
           <!-- ── Left Column: Realistic Instagram Post/Reel Simulator ── -->
           <div class="ig-mockup-wrapper">
             <div class="ig-phone-frame">
-              <!-- IG Top Header -->
+              <!-- IG Top Header: Connected Account -->
               <div class="ig-header">
                 <div class="ig-user-info">
                   <div class="ig-avatar-ring">
                     <div class="ig-avatar">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <img
+                        v-if="igAvatar && !avatarLoadError"
+                        :src="igAvatar"
+                        :alt="igUsername"
+                        class="ig-avatar-img"
+                        @error="avatarLoadError = true"
+                      />
+                      <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                       </svg>
                     </div>
                   </div>
                   <div class="ig-text-meta">
                     <div class="ig-username-row">
-                      <span class="ig-username">estacalaserena</span>
+                      <span class="ig-username">{{ igUsername }}</span>
                       <svg class="ig-verified-icon" width="12" height="12" viewBox="0 0 24 24" fill="#007da5">
                         <circle cx="12" cy="12" r="10"/>
                         <path d="M9 12l2 2 4-4" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
                       </svg>
+                      <span class="ig-live-dot" :class="{ connected: isConnected }" :title="isConnected ? 'Conectado a Instagram en vivo' : 'Modo demostración'"></span>
                     </div>
-                    <span class="ig-location">La Serena, Chile &bull; Estaca SUD</span>
+                    <span class="ig-location">{{ igName }} &bull; Cuenta Oficial</span>
                   </div>
                 </div>
 
@@ -110,7 +118,7 @@
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="5 3 19 12 5 21 5 3"/>
                   </svg>
-                  <span>Reel @estacalaserena</span>
+                  <span>Reel @{{ igUsername }}</span>
                 </div>
               </div>
 
@@ -149,7 +157,7 @@
               <!-- IG Caption & Hashtags Block -->
               <div class="ig-caption-block">
                 <p class="ig-caption-text">
-                  <strong class="ig-caption-author">estacalaserena</strong>
+                  <strong class="ig-caption-author">{{ igUsername }}</strong>
                   <span :class="{ 'caption-truncated': !expandedCaptions[post.id] }">
                     {{ post.caption || 'Sin texto descriptivo' }}
                   </span>
@@ -358,19 +366,27 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useApprovalStore } from '../stores/index'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useApprovalStore, useInsightsStore } from '../stores/index'
 
 const approvalStore = useApprovalStore()
+const insightsStore = useInsightsStore()
 const tab = ref('queue')
 const reviewComments = reactive({})
 const checklistState = reactive({})
 const expandedCaptions = reactive({})
 const likedPosts = reactive({})
 const failedMedia = reactive(new Set())
+const avatarLoadError = ref(false)
 const processing = ref(null)
 const toastMessage = ref('')
 const toastType = ref('success')
+
+const igProfile = computed(() => insightsStore.overview?.profile)
+const igUsername = computed(() => igProfile.value?.username || 'estacalaserena')
+const igName = computed(() => igProfile.value?.name || 'Estaca La Serena')
+const igAvatar = computed(() => igProfile.value?.profile_picture_url || '')
+const isConnected = computed(() => insightsStore.overview?.isConnected ?? true)
 
 const formatLabels = {
   static: 'Post Estático',
@@ -387,8 +403,8 @@ function resolvePostMedia(post) {
   if (post.media_paths) {
     const first = post.media_paths.split(',')[0].trim()
     if (first.startsWith('http')) return first
-    if (first.startsWith('docs/')) return `http://localhost:3001/${first}`
-    return `http://localhost:3001/uploads/${first}`
+    if (first.startsWith('docs/')) return `/${first}`
+    return `/uploads/${first}`
   }
   return null
 }
@@ -458,8 +474,11 @@ async function loadHistory() {
   await approvalStore.fetchHistory()
 }
 
-onMounted(() => {
+onMounted(async () => {
   approvalStore.fetchQueue()
+  if (!insightsStore.overview) {
+    await insightsStore.fetchOverview()
+  }
 })
 </script>
 
@@ -653,6 +672,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.ig-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .ig-text-meta {
@@ -663,13 +690,27 @@ onMounted(() => {
 .ig-username-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .ig-username {
   font-size: 0.8125rem;
   font-weight: 700;
   color: #262626;
+}
+
+.ig-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.ig-live-dot.connected {
+  background: #10b981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
 }
 
 .ig-location {

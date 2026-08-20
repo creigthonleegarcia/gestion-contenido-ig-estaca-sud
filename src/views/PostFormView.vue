@@ -421,7 +421,7 @@ onMounted(async () => {
     form.format = post.format || 'static'
     form.scheduled_at = post.scheduled_at ? post.scheduled_at.replace(' ', 'T').slice(0, 16) : ''
     if (post.media_paths) {
-      preview.value = `http://localhost:3001/uploads/${post.media_paths.split(',')[0]}`
+      preview.value = `/uploads/${post.media_paths.split(',')[0]}`
       isImage.value = true
     }
     if (post.norms_checklist) {

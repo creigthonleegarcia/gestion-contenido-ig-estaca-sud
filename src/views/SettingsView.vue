@@ -174,7 +174,7 @@ const demoAccounts = [
 
 async function checkApiStatus() {
   try {
-    const res = await fetch('http://localhost:3001/api/publish/status', {
+    const res = await fetch('/api/publish/status', {
       headers: auth.getHeaders()
     })
     const data = await res.json()

@@ -36,6 +36,32 @@ router.get('/history', (req, res) => {
   res.json(history);
 });
 
+// Helper: Resolve media URL to a public HTTPS URL that Meta API can access
+function resolvePublicMediaUrl(post) {
+  const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+  
+  // If already a public https URL, return as-is
+  if (post.media_url && post.media_url.startsWith('https://')) {
+    return post.media_url;
+  }
+  
+  // If media_url points to localhost, replace with BASE_URL
+  if (post.media_url && post.media_url.includes('localhost')) {
+    const urlPath = new URL(post.media_url).pathname;
+    return `${baseUrl}${urlPath}`;
+  }
+  
+  // Build from media_paths
+  if (post.media_paths) {
+    const first = post.media_paths.split(',')[0].trim();
+    if (first.startsWith('http')) return first;
+    if (first.startsWith('docs/')) return `${baseUrl}/${first}`;
+    return `${baseUrl}/uploads/${first}`;
+  }
+  
+  return post.media_url;
+}
+
 // Helper: Publish post immediately to Instagram / Database
 async function publishImmediately(post, norms_checklist) {
   const accessToken = process.env.META_ACCESS_TOKEN;
@@ -43,7 +69,17 @@ async function publishImmediately(post, norms_checklist) {
   const META_API_BASE = 'https://graph.facebook.com/v22.0';
   let igMediaId = null;
 
-  if (accessToken && igAccountId && post.media_url && post.media_url.startsWith('https://')) {
+  const publicMediaUrl = resolvePublicMediaUrl(post);
+  
+  console.log(`\n📋 ═══════════════════════════════════════════════════`);
+  console.log(`📋 PUBLICACIÓN INMEDIATA — Post ID: ${post.id}`);
+  console.log(`📋 Título: "${post.title}"`);
+  console.log(`📋 media_url original: ${post.media_url}`);
+  console.log(`📋 media_url pública:  ${publicMediaUrl}`);
+  console.log(`📋 Formato: ${post.format}`);
+  console.log(`📋 ═══════════════════════════════════════════════════`);
+
+  if (accessToken && igAccountId && publicMediaUrl && publicMediaUrl.startsWith('https://')) {
     try {
       const caption = `${post.caption || ''}\n\n${post.hashtags || ''}`.trim();
       const containerParams = new URLSearchParams({
@@ -53,18 +89,26 @@ async function publishImmediately(post, norms_checklist) {
 
       if (post.format === 'reel') {
         containerParams.set('media_type', 'REELS');
-        containerParams.set('video_url', post.media_url);
+        containerParams.set('video_url', publicMediaUrl);
       } else {
-        containerParams.set('image_url', post.media_url);
+        containerParams.set('image_url', publicMediaUrl);
       }
 
+      console.log(`📤 [Paso 1/2] Creando contenedor en Meta API...`);
+      console.log(`   → Endpoint: ${META_API_BASE}/${igAccountId}/media`);
+      console.log(`   → image_url: ${publicMediaUrl}`);
+      
       const containerRes = await fetch(`${META_API_BASE}/${igAccountId}/media`, {
         method: 'POST',
         body: containerParams
       });
       const containerData = await containerRes.json();
+      
+      console.log(`   ← Respuesta container:`, JSON.stringify(containerData));
 
       if (!containerData.error && containerData.id) {
+        console.log(`📤 [Paso 2/2] Publicando contenedor ${containerData.id}...`);
+        
         const publishRes = await fetch(`${META_API_BASE}/${igAccountId}/media_publish`, {
           method: 'POST',
           body: new URLSearchParams({
@@ -73,11 +117,29 @@ async function publishImmediately(post, norms_checklist) {
           })
         });
         const publishData = await publishRes.json();
-        if (publishData.id) igMediaId = publishData.id;
+        
+        console.log(`   ← Respuesta publish:`, JSON.stringify(publishData));
+        
+        if (publishData.id) {
+          igMediaId = publishData.id;
+          console.log(`✅ PUBLICADO EN INSTAGRAM — ig_media_id: ${igMediaId}`);
+        } else {
+          console.error(`❌ Meta API no devolvió ID de publicación:`, publishData);
+        }
+      } else {
+        console.error(`❌ Error creando contenedor en Meta:`, containerData.error?.message || containerData);
       }
     } catch (err) {
-      console.error('Error publicando directamente a Meta:', err.message);
+      console.error(`❌ Error de red publicando en Meta:`, err.message);
     }
+  } else {
+    console.log(`⚠️  No se puede publicar en Meta API:`);
+    if (!accessToken) console.log(`   - META_ACCESS_TOKEN no configurado`);
+    if (!igAccountId) console.log(`   - IG_BUSINESS_ACCOUNT_ID no configurado`);
+    if (!publicMediaUrl) console.log(`   - No hay media_url`);
+    if (publicMediaUrl && !publicMediaUrl.startsWith('https://')) console.log(`   - media_url no es HTTPS: ${publicMediaUrl}`);
+    console.log(`   → Guardando como publicación local`);
+    igMediaId = `local_${Date.now()}`;
   }
 
   db.prepare(`
@@ -89,6 +151,9 @@ async function publishImmediately(post, norms_checklist) {
         updated_at = CURRENT_TIMESTAMP 
     WHERE id = ?
   `).run(igMediaId, norms_checklist, post.id);
+  
+  console.log(`💾 Post ${post.id} actualizado en BD → status: published, ig_media_id: ${igMediaId}`);
+  console.log(`📋 ═══════════════════════════════════════════════════\n`);
 }
 
 // Approve post — with automatic immediate publish if scheduled_at has passed

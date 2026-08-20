@@ -345,7 +345,7 @@ function getPostImage(post) {
   if (post.media_url) return post.media_url
   if (post.media_paths) {
     const first = post.media_paths.split(',')[0]
-    return `http://localhost:3001/uploads/${first}`
+    return `/uploads/${first}`
   }
   return null
 }

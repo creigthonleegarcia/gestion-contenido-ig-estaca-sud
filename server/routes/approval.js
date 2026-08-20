@@ -142,18 +142,34 @@ async function publishImmediately(post, norms_checklist) {
     igMediaId = `local_${Date.now()}`;
   }
 
-  db.prepare(`
-    UPDATE posts 
-    SET status = 'published', 
-        published_at = CURRENT_TIMESTAMP, 
-        ig_media_id = COALESCE(?, ig_media_id),
-        norms_checklist = COALESCE(?, norms_checklist), 
-        updated_at = CURRENT_TIMESTAMP 
-    WHERE id = ?
-  `).run(igMediaId, norms_checklist, post.id);
-  
-  console.log(`💾 Post ${post.id} actualizado en BD → status: published, ig_media_id: ${igMediaId}`);
+  // Only mark as published if we got a real ig_media_id or a local fallback
+  if (igMediaId) {
+    db.prepare(`
+      UPDATE posts 
+      SET status = 'published', 
+          published_at = CURRENT_TIMESTAMP, 
+          ig_media_id = COALESCE(?, ig_media_id),
+          norms_checklist = COALESCE(?, norms_checklist), 
+          updated_at = CURRENT_TIMESTAMP 
+      WHERE id = ?
+    `).run(igMediaId, norms_checklist, post.id);
+    
+    console.log(`💾 Post ${post.id} actualizado en BD → status: published, ig_media_id: ${igMediaId}`);
+  } else {
+    // Meta API failed — mark as approved but flag the error
+    db.prepare(`
+      UPDATE posts 
+      SET status = 'approved', 
+          norms_checklist = COALESCE(?, norms_checklist), 
+          updated_at = CURRENT_TIMESTAMP 
+      WHERE id = ?
+    `).run(norms_checklist, post.id);
+    
+    console.error(`⚠️ Post ${post.id} NO se publicó en IG — queda como 'approved' para reintento`);
+  }
   console.log(`📋 ═══════════════════════════════════════════════════\n`);
+
+  return igMediaId; // return so caller knows if it worked
 }
 
 // Approve post — with automatic immediate publish if scheduled_at has passed
@@ -179,9 +195,13 @@ router.post('/:postId/approve', async (req, res) => {
 
   if (isPastOrImmediate) {
     // Si la hora programada ya pasó o no se especificó, se publica de inmediato
-    await publishImmediately(post, norms_checklist);
-    message = 'Post aprobado y publicado de inmediato (la fecha programada ya había vencido)';
-    console.log(`🚀 Post ID ${post.id} ("${post.title}") publicado de inmediato tras aprobación`);
+    const igResult = await publishImmediately(post, norms_checklist);
+    if (igResult) {
+      message = 'Post aprobado y publicado en Instagram exitosamente';
+    } else {
+      message = 'Post aprobado. ⚠️ La publicación en Instagram falló (token inválido o error de API). El post quedó como aprobado para reintento.';
+    }
+    console.log(`🚀 Post ID ${post.id} ("${post.title}") — resultado: ${igResult ? 'PUBLICADO' : 'FALLO META API'}`);
   } else {
     // Si la fecha es a futuro, queda en estado 'scheduled' para el cron scheduler
     db.prepare('UPDATE posts SET status = ?, norms_checklist = COALESCE(?, norms_checklist), updated_at = CURRENT_TIMESTAMP WHERE id = ?')
@@ -219,6 +239,29 @@ router.post('/:postId/reject', (req, res) => {
     .run('rejected', req.params.postId);
 
   res.json({ message: 'Post rechazado' });
+});
+
+// Retry publish — for posts that were approved but failed to publish to IG
+router.post('/:postId/retry-publish', async (req, res) => {
+  const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.postId);
+
+  if (!post) return res.status(404).json({ error: 'Post no encontrado' });
+  if (post.status !== 'approved' && post.status !== 'published') {
+    return res.status(400).json({ error: 'Solo se pueden reintentar posts aprobados o con publicación fallida' });
+  }
+
+  const igResult = await publishImmediately(post, post.norms_checklist);
+  
+  const updated = db.prepare(`
+    SELECT p.*, pl.name as pillar_name, pl.color as pillar_color
+    FROM posts p LEFT JOIN pillars pl ON p.pillar_id = pl.id WHERE p.id = ?
+  `).get(req.params.postId);
+
+  if (igResult) {
+    res.json({ message: 'Post publicado exitosamente en Instagram', post: updated });
+  } else {
+    res.json({ message: '⚠️ La publicación en Instagram falló nuevamente. Verifique el token de acceso.', post: updated });
+  }
 });
 
 export default router;

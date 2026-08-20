@@ -1628,3 +1628,4 @@ onMounted(async () => {
     font-size: 1.15rem;
   }
 }
+</style>

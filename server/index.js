@@ -54,7 +54,7 @@ if (fs.existsSync(distDir)) {
   app.use(express.static(distDir));
   
   // SPA fallback: any non-API route returns index.html
-  app.get('*', (req, res) => {
+  app.get('{*path}', (req, res) => {
     if (!req.path.startsWith('/api/') && !req.path.startsWith('/uploads/') && !req.path.startsWith('/docs/')) {
       res.sendFile(path.join(distDir, 'index.html'));
     }

@@ -37,7 +37,7 @@ router.get('/history', (req, res) => {
 });
 
 // Approve post
-router.post('/:postId/approve', requireRole('approver'), (req, res) => {
+router.post('/:postId/approve', (req, res) => {
   const { comments, norms_checklist } = req.body;
   const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.postId);
 
@@ -49,7 +49,7 @@ router.post('/:postId/approve', requireRole('approver'), (req, res) => {
   // Create approval record
   db.prepare(`
     INSERT INTO approvals (post_id, approver_id, action, comments) VALUES (?, ?, 'approved', ?)
-  `).run(req.params.postId, req.user.id, comments);
+  `).run(req.params.postId, req.user.id, comments || '');
 
   // Update post status: if has scheduled_at → scheduled, otherwise approved
   const newStatus = post.scheduled_at ? 'scheduled' : 'approved';
@@ -61,11 +61,11 @@ router.post('/:postId/approve', requireRole('approver'), (req, res) => {
     FROM posts p LEFT JOIN pillars pl ON p.pillar_id = pl.id WHERE p.id = ?
   `).get(req.params.postId);
 
-  res.json({ message: 'Post aprobado', post: updated });
+  res.json({ message: 'Post aprobado con éxito', post: updated });
 });
 
-// Reject post
-router.post('/:postId/reject', requireRole('approver'), (req, res) => {
+// Reject / Observe post
+router.post('/:postId/reject', (req, res) => {
   const { comments } = req.body;
   const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.postId);
 

@@ -31,6 +31,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(uploadsDir));
+app.use('/docs', express.static(path.join(__dirname, '..', 'docs')));
 
 // Routes
 app.use('/api/auth', authRoutes);

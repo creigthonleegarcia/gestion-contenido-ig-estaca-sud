@@ -1,7 +1,30 @@
 <template>
-  <div class="app-root">
+  <div class="app-root" :class="{ 'sidebar-open': sidebarOpen }">
     <template v-if="auth.isAuthenticated && $route.path !== '/login'">
-      <aside class="sidebar">
+      <!-- Mobile top bar with hamburger -->
+      <header class="mobile-topbar">
+        <button class="hamburger-btn" @click="sidebarOpen = !sidebarOpen" aria-label="Menú">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="mobile-brand">
+          <div class="brand-icon brand-icon--sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/>
+            </svg>
+          </div>
+          <span class="brand-name">Estaca La Serena</span>
+        </div>
+        <span v-if="pendingCount > 0" class="mobile-badge">{{ pendingCount }}</span>
+      </header>
+
+      <!-- Backdrop overlay for mobile -->
+      <div class="sidebar-backdrop" @click="sidebarOpen = false"></div>
+
+      <aside class="sidebar" :class="{ open: sidebarOpen }">
         <div class="sidebar-brand">
           <div class="brand-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -122,13 +145,20 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 
 const auth = useAuthStore()
 const router = useRouter()
+const route = useRoute()
 const pendingCount = ref(0)
+const sidebarOpen = ref(false)
+
+// Close sidebar on route change (mobile)
+watch(() => route.path, () => {
+  sidebarOpen.value = false
+})
 
 async function fetchPendingCount() {
   if (!auth.isAuthenticated) return
@@ -366,5 +396,130 @@ onMounted(() => {
   padding: var(--sp-32);
   min-height: 100vh;
   background: var(--gray-2);
+}
+
+/* ═══ Mobile Top Bar ═══ */
+.mobile-topbar {
+  display: none;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+/* ═══ Responsive: Tablet & Mobile (≤768px) ═══ */
+@media (max-width: 768px) {
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    padding: 0 16px;
+    background: var(--bg-level1);
+    border-bottom: 1px solid var(--border-tertiary);
+    z-index: 200;
+  }
+
+  .hamburger-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: background 150ms;
+    flex-shrink: 0;
+  }
+
+  .hamburger-btn:active {
+    background: var(--bg-active);
+    transform: scale(0.93);
+    transition-duration: 60ms;
+  }
+
+  .mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .brand-icon--sm {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+  }
+
+  .mobile-brand .brand-name {
+    font: 700 0.85rem/1.3 var(--font-serif);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-badge {
+    background: var(--accent-emphasis);
+    color: white;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    min-width: 22px;
+    text-align: center;
+  }
+
+  /* Sidebar becomes overlay drawer */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 280ms cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: none;
+    width: min(280px, 80vw);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+  }
+
+  /* Backdrop */
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 280ms ease;
+  }
+
+  .sidebar-open .sidebar-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Main content full width */
+  .main-content {
+    margin-left: 0;
+    padding: 72px 16px 24px;
+    width: 100%;
+  }
+}
+
+/* ═══ Small phones (≤480px) ═══ */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 64px 12px 20px;
+  }
 }
 </style>

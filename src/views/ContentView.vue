@@ -825,4 +825,44 @@ onMounted(async () => {
   margin: 0 auto 12px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .content-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .content-header p {
+    display: none;
+  }
+
+  .status-tabs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filters-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filters-row input,
+  .filters-row select {
+    width: 100%;
+  }
+
+  .posts-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .post-card {
+    padding: 0;
+  }
+}
 </style>

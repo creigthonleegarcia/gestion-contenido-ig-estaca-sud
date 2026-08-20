@@ -607,4 +607,58 @@ onMounted(async () => {
   margin: 0;
   max-width: 700px;
 }
+
+@media (max-width: 768px) {
+  .calendar-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .calendar-header p {
+    display: none;
+  }
+
+  .month-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .pillar-legend {
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.75rem;
+  }
+
+  .calendar-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .calendar-table {
+    min-width: 600px;
+  }
+
+  .cal-day-cell {
+    min-height: 80px;
+    padding: 4px;
+  }
+
+  .day-number {
+    font-size: 0.7rem;
+  }
+
+  .cal-chip {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+  }
+
+  .generate-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .generate-info {
+    flex-direction: column;
+  }
+}
 </style>

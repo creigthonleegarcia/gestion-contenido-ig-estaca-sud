@@ -1292,4 +1292,46 @@ onMounted(async () => {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 768px) {
+  .approval-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .approval-header p {
+    display: none;
+  }
+
+  .approval-review-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 12px;
+  }
+
+  .ig-mockup-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+
+  .ig-phone-frame {
+    max-width: 375px;
+    width: 100%;
+  }
+
+  .decision-panel {
+    padding: 16px;
+  }
+
+  .quick-comments {
+    flex-wrap: wrap;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+  }
+}
 </style>

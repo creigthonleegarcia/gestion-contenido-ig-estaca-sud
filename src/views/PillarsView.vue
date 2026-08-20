@@ -533,4 +533,25 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 768px) {
+  .pillars-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .pillars-header p {
+    display: none;
+  }
+
+  .pillar-card {
+    padding: 16px;
+  }
+
+  .modal-content {
+    width: 95vw;
+    max-height: 85vh;
+    margin: 10px;
+    padding: 20px;
+  }
+}
 </style>

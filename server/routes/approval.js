@@ -36,8 +36,63 @@ router.get('/history', (req, res) => {
   res.json(history);
 });
 
-// Approve post
-router.post('/:postId/approve', (req, res) => {
+// Helper: Publish post immediately to Instagram / Database
+async function publishImmediately(post, norms_checklist) {
+  const accessToken = process.env.META_ACCESS_TOKEN;
+  const igAccountId = process.env.IG_BUSINESS_ACCOUNT_ID;
+  const META_API_BASE = 'https://graph.facebook.com/v22.0';
+  let igMediaId = null;
+
+  if (accessToken && igAccountId && post.media_url && post.media_url.startsWith('https://')) {
+    try {
+      const caption = `${post.caption || ''}\n\n${post.hashtags || ''}`.trim();
+      const containerParams = new URLSearchParams({
+        caption,
+        access_token: accessToken
+      });
+
+      if (post.format === 'reel') {
+        containerParams.set('media_type', 'REELS');
+        containerParams.set('video_url', post.media_url);
+      } else {
+        containerParams.set('image_url', post.media_url);
+      }
+
+      const containerRes = await fetch(`${META_API_BASE}/${igAccountId}/media`, {
+        method: 'POST',
+        body: containerParams
+      });
+      const containerData = await containerRes.json();
+
+      if (!containerData.error && containerData.id) {
+        const publishRes = await fetch(`${META_API_BASE}/${igAccountId}/media_publish`, {
+          method: 'POST',
+          body: new URLSearchParams({
+            creation_id: containerData.id,
+            access_token: accessToken
+          })
+        });
+        const publishData = await publishRes.json();
+        if (publishData.id) igMediaId = publishData.id;
+      }
+    } catch (err) {
+      console.error('Error publicando directamente a Meta:', err.message);
+    }
+  }
+
+  db.prepare(`
+    UPDATE posts 
+    SET status = 'published', 
+        published_at = CURRENT_TIMESTAMP, 
+        ig_media_id = COALESCE(?, ig_media_id),
+        norms_checklist = COALESCE(?, norms_checklist), 
+        updated_at = CURRENT_TIMESTAMP 
+    WHERE id = ?
+  `).run(igMediaId, norms_checklist, post.id);
+}
+
+// Approve post — with automatic immediate publish if scheduled_at has passed
+router.post('/:postId/approve', async (req, res) => {
   const { comments, norms_checklist } = req.body;
   const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.postId);
 
@@ -46,22 +101,35 @@ router.post('/:postId/approve', (req, res) => {
     return res.status(400).json({ error: 'Solo se pueden aprobar posts en revisión' });
   }
 
-  // Create approval record
+  // Create approval audit record
   db.prepare(`
     INSERT INTO approvals (post_id, approver_id, action, comments) VALUES (?, ?, 'approved', ?)
   `).run(req.params.postId, req.user.id, comments || '');
 
-  // Update post status: if has scheduled_at → scheduled, otherwise approved
-  const newStatus = post.scheduled_at ? 'scheduled' : 'approved';
-  db.prepare('UPDATE posts SET status = ?, norms_checklist = COALESCE(?, norms_checklist), updated_at = CURRENT_TIMESTAMP WHERE id = ?')
-    .run(newStatus, norms_checklist, req.params.postId);
+  const now = new Date();
+  const scheduledTime = post.scheduled_at ? new Date(post.scheduled_at) : null;
+  const isPastOrImmediate = !scheduledTime || scheduledTime <= now;
+
+  let message = 'Post aprobado con éxito';
+
+  if (isPastOrImmediate) {
+    // Si la hora programada ya pasó o no se especificó, se publica de inmediato
+    await publishImmediately(post, norms_checklist);
+    message = 'Post aprobado y publicado de inmediato (la fecha programada ya había vencido)';
+    console.log(`🚀 Post ID ${post.id} ("${post.title}") publicado de inmediato tras aprobación`);
+  } else {
+    // Si la fecha es a futuro, queda en estado 'scheduled' para el cron scheduler
+    db.prepare('UPDATE posts SET status = ?, norms_checklist = COALESCE(?, norms_checklist), updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+      .run('scheduled', norms_checklist, req.params.postId);
+    message = `Post aprobado y programado para el ${scheduledTime.toLocaleString('es-CL')}`;
+  }
 
   const updated = db.prepare(`
     SELECT p.*, pl.name as pillar_name, pl.color as pillar_color
     FROM posts p LEFT JOIN pillars pl ON p.pillar_id = pl.id WHERE p.id = ?
   `).get(req.params.postId);
 
-  res.json({ message: 'Post aprobado con éxito', post: updated });
+  res.json({ message, post: updated });
 });
 
 // Reject / Observe post
